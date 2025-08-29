@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>แบบทดสอบกลางภาค กล้องจุลทรรศน์และหน่วยของสิ่งมีชีวิต ม.1 – K·P·A + Self (40 ข้อ)</title>
+<style>
+  :root{ --bg:#0b122a;--panel:#0f1c3a;--card:#16243f;--ink:#e6f1ff;--muted:#bcd3ff;--accent:#38bdf8;--accent2:#60a5fa;--ok:#22c55e;--warn:#f59e0b;--bad:#ef4444;--bd:#274064; }
+  *{box-sizing:border-box}
+  body{margin:0;font:16px/1.55 system-ui,Inter,"Noto Sans Thai",sans-serif;background:radial-gradient(1200px 800px at 20% -10%,#122048,transparent),linear-gradient(#0b122a,#091024);color:var(--ink)}
+  header{position:sticky;top:0;background:rgba(10,18,40,.9);backdrop-filter:blur(8px);border-bottom:1px solid #1c2f54;z-index:30}
+  header .wrap{max-width:1100px;margin:auto;display:flex;gap:16px;align-items:center;padding:12px 16px}
+  h1{font-size:20px;margin:0}
+  main{max-width:1100px;margin:24px auto;padding:0 16px 64px}
+  .panel{background:var(--panel);border:1px solid #1f335b;border-radius:16px;padding:16px;margin:16px 0}
+  .grid{display:grid;gap:12px}
+  .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  label{display:block;font-weight:600;margin-bottom:6px}
+  input[type=text], textarea, select{width:100%;padding:10px 12px;background:#0e1a35;color:var(--ink);border:1px solid #2b4572;border-radius:10px}
+  textarea{min-height:100px}
+  .card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;margin:16px 0}
+  .opt{display:flex;gap:10px;align-items:flex-start;margin:8px 0;padding:10px;border:1px solid #1f335a;border-radius:12px;background:#0d1b37}
+  .opt input{margin-top:4px}
+  .dropzone{min-height:44px;padding:8px;border:1px dashed #365285;border-radius:12px;background:#0a1a36}
+  .token{display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border-radius:999px;background:#14305a;border:1px solid #2b4a7f;margin:4px;cursor:grab}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .pair-row{display:grid;grid-template-columns:1fr 24px 1fr;align-items:center;gap:8px;margin:6px 0}
+  .progress{height:8px;background:#0f2245;border-radius:999px;overflow:hidden;border:1px solid #1d3563}
+  .bar{height:100%;width:0;background:linear-gradient(90deg,#31b2f3,#6aa7ff)}
+  details{background:#0d1c3a;border:1px solid #203a6b;border-radius:12px;padding:10px 12px}
+  .small{font-size:13px}
+  .k{color:#94f}.p{color:#6df}.a{color:#9f6}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border:1px solid #2a426d;border-radius:999px;background:#0f1e3f;font-size:12px;color:#bcd3ff}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;background:linear-gradient(180deg,var(--accent),var(--accent2));color:#04223a;border:0;font-weight:700;cursor:pointer}
+  .btn.secondary{background:#18325e;color:var(--ink);border:1px solid #2a4b86}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>แบบทดสอบกลางภาค: กล้องจุลทรรศน์และหน่วยของสิ่งมีชีวิต ม.1 – K·P·A (40 ข้อ)</h1>
+    <div class="pill">Offline + Autosave</div>
+  </div>
+</header>
+<main>
+  <section class="panel">
+    <details>
+      <summary><strong>Blueprint & วิธีใช้</strong> (คลิกเพื่อเปิด)</summary>
+      <div class="grid g2" style="margin-top:10px">
+        <div>
+          <h3>วิเคราะห์ตัวชี้วัด K·P·A (ย่อ)</h3>
+          <ul class="small">
+            <li><b class="k">K (ความรู้)</b>: ส่วนประกอบกล้องจุลทรรศน์และหน้าที่, ทฤษฎีเซลล์, หน่วยและการแปลงหน่วย (mm, µm, nm), โครงสร้างพื้นฐานของเซลล์พืช/สัตว์, โปรคาริโอต–ยูคาริโอต, ระดับการจัดระบบ (เซลล์→เนื้อเยื่อ→อวัยวะ→ระบบอวัยวะ→สิ่งมีชีวิต)</li>
+            <li><b class="p">P (กระบวนการ)</b>: ขั้นตอนการใช้กล้องอย่างปลอดภัย/การโฟกัส, การเตรียมสไลด์เปียก, การอ่านภาพ/ตีความสเกล, การคำนวณกำลังขยายและการประมาณขนาดตัวอย่าง, การจำแนกคุณลักษณะจากหลักฐาน</li>
+            <li><b class="a">A (การประยุกต์)</b>: นำความรู้ไปใช้ในสถานการณ์จริง (ออกแบบแผนสังเกต/วัดขนาดเซลล์, เลือกอุปกรณ์/สารย้อมสี, ความปลอดภัยชีวภาพ, สื่อสารผลอย่างมีความรับผิดชอบ)</li>
+          </ul>
+          <p class="small" style="color:var(--muted)">สัดส่วนคะแนนรวม = 100 (K=30 / P=38 / A=32) • จำนวนข้อ: K 16 ข้อ, P 14 ข้อ, A 10 ข้อ (รวม 40)</p>
+        </div>
+        <div>
+          <h3>วิธีใช้งาน</h3>
+          <ol class="small">
+            <li>กรอกข้อมูลผู้สอบ → ทำข้อสอบ</li>
+            <li>กด <b>คำนวณคะแนน</b> เพื่อดูสรุป K/P/A</li>
+            <li>กด <b>ส่งออก CSV/JSON</b> เพื่อบันทึกผล</li>
+          </ol>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <section class="panel">
+    <h2>ข้อมูลผู้สอบ</h2>
+    <div class="grid g3">
+      <div><label>ชื่อ–สกุล</label><input id="name" type="text" placeholder="เช่น เด็กชาย…"/></div>
+      <div><label>รหัสนักเรียน/เลขที่</label><input id="sid" type="text" placeholder="เช่น ม1/1–15"/></div>
+      <div><label>ห้อง</label><input id="room" type="text" placeholder="เช่น ม1/1"/></div>
+    </div>
+    <div class="progress" aria-label="progress"><div id="progbar" class="bar"></div></div>
+    <p class="small" style="color:var(--muted)">ระบบบันทึกอัตโนมัติ (LocalStorage) • ใช้งานออฟไลน์ได้ • Chrome/Edge/Firefox</p>
+  </section>
+
+  <div id="quiz"></div>
+
+  <section class="panel" id="selfPanel">
+    <h2>Self-Assessment (ไม่คิดคะแนน)</h2>
+    <div class="grid g3">
+      <div>
+        <label>K</label>
+        <select id="selfK"><option value=""></option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+      </div>
+      <div>
+        <label>P</label>
+        <select id="selfP"><option value=""></option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+      </div>
+      <div>
+        <label>A</label>
+        <select id="selfA"><option value=""></option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+      </div>
+    </div>
+    <label>Reflection (2–3 ประโยค): จุดที่มั่นใจ/ยังสับสน/ข้อมูลที่อยากหาต่อ</label>
+    <textarea id="reflection" placeholder="เขียนสะท้อนคิดสั้น ๆ"></textarea>
+  </section>
+
+  <section class="panel">
+    <h2>สรุปผล</h2>
+    <div class="grid g3">
+      <div class="card"><b class="k">K</b>: <span id="sumK">0</span> / 30</div>
+      <div class="card"><b class="p">P</b>: <span id="sumP">0</span> / 38</div>
+      <div class="card"><b class="a">A</b>: <span id="sumA">0</span> / 32</div>
+    </div>
+    <div class="card">รวมคะแนนทั้งหมด: <b id="sumTotal">0 / 100</b></div>
+    <div class="toolbar">
+      <button class="btn" id="calcBtn">คำนวณคะแนน</button>
+      <button class="btn secondary" id="exportCsvBtn" disabled>ส่งออก CSV</button>
+      <button class="btn secondary" id="exportJsonBtn" disabled>ส่งออก JSON</button>
+      <button class="btn secondary" id="resetBtn">ล้างคำตอบ (รีเซ็ต)</button>
+    </div>
+  </section>
+</main>
+
+<script>
+// ========== Utilities ==========
+const $ = (sel, root=document) => root.querySelector(sel);
+const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+const byId = id => document.getElementById(id);
+function shuffle(arr){ return arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(v=>v[1]); }
+function download(filename, text){ const blob = new Blob([text], {type:'text/plain;charset=utf-8'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url); }
+function escapeCsv(val){ let s = String(val ?? '').replace(/\r?\n/g,' ').trim(); if (s.includes(',') || s.includes('"')) s = '"' + s.replace(/"/g,'""') + '"'; return s; }
+function normalizeText(s){ return (s||'').toString().trim().toLowerCase().replace(/\s+/g,' '); }
+
+// ========== QUIZ DATA (40 ข้อ) ==========
+const QUIZ = {
+  meta:{ title:"แบบทดสอบกลางภาค กล้องจุลทรรศน์และหน่วยของสิ่งมีชีวิต ม.1 – K·P·A + Self", version:"1.0.0", weights:{K:30,P:38,A:32} },
+  items:[
+    // ===== K (16 ข้อ | รวม 30 คะแนน) =====
+    {id:'Q1', dim:'K', points:2, type:'mcq', prompt:'ส่วนใดของกล้องจุลทรรศน์ใช้ควบคุมปริมาณแสงที่ผ่านตัวอย่าง?', options:[
+      {t:'คอนเดนเซอร์ (condenser)', ok:false},{t:'ไดอะแฟรม/ม่านรูรับแสง (diaphragm)', ok:true},{t:'แท่นวางสไลด์ (stage)', ok:false},{t:'แขนกล้อง (arm)', ok:false}
+    ]},
+    {id:'Q2', dim:'K', points:2, type:'mcq', prompt:'ปุ่มปรับภาพหยาบ (coarse adjustment) ใช้เมื่อใด?', options:[
+      {t:'ใช้กับเลนส์กำลังสูงเพื่อปรับละเอียด', ok:false},{t:'เริ่มโฟกัสด้วยเลนส์กำลังต่ำ', ok:true},{t:'ใช้ปรับความสว่าง', ok:false},{t:'ใช้หมุนถอดเลนส์ใกล้วัตถุ', ok:false}
+    ]},
+    {id:'Q3', dim:'K', points:1.5, type:'mcq', prompt:'"ความละเอียด (resolution)" หมายถึงอะไร?', options:[
+      {t:'ความสามารถในการขยายภาพให้ใหญ่ขึ้น', ok:false},{t:'ความสามารถในการแยกจุดที่อยู่ใกล้กันให้เห็นแยกจากกัน', ok:true},{t:'ความสว่างของภาพ', ok:false},{t:'ความคมของเลนส์', ok:false}
+    ]},
+    {id:'Q4', dim:'K', points:2, type:'mcq', prompt:'เลนส์ใกล้ตา 10× และเลนส์ใกล้วัตถุ 40× กำลังขยายรวมเท่าไร?', options:[
+      {t:'50×', ok:false},{t:'400×', ok:true},{t:'4×', ok:false},{t:'100×', ok:false}
+    ]},
+    {id:'Q5', dim:'K', points:2, type:'short', prompt:'1 มิลลิเมตร (mm) เท่ากับ ______ ไมโครเมตร (µm)', answers:['1000','1000 µm','1000ไมโครเมตร','1000 micrometers','1000 micrometer']},
+    {id:'Q6', dim:'K', points:2, type:'mcq', prompt:'ข้อใด <u>ไม่ใช่</u> เนื้อหาสำคัญของทฤษฎีเซลล์สมัยใหม่', options:[
+      {t:'สิ่งมีชีวิตทุกชนิดประกอบด้วยเซลล์', ok:false},{t:'เซลล์เป็นหน่วยพื้นฐานของสิ่งมีชีวิต', ok:false},{t:'เซลล์ใหม่เกิดจากเซลล์ก่อนหน้า', ok:false},{t:'เซลล์เกิดจากการรวมตัวของสารไม่มีชีวิต', ok:true}
+    ]},
+    {id:'Q7', dim:'K', points:2, type:'mcq', prompt:'ไรโบโซมมีหน้าที่เด่นคืออะไร?', options:[
+      {t:'สังเคราะห์โปรตีน', ok:true},{t:'ย่อยสารพิษ', ok:false},{t:'สร้างพลังงานโดยตรงให้เซลล์', ok:false},{t:'เก็บข้อมูลพันธุกรรม', ok:false}
+    ]},
+    {id:'Q8', dim:'K', points:2, type:'mcq', prompt:'ข้อใดเป็นโครงสร้างที่พบในเซลล์พืชแต่ไม่พบในเซลล์สัตว์', options:[
+      {t:'ผนังเซลล์', ok:true},{t:'เยื่อหุ้มเซลล์', ok:false},{t:'นิวเคลียส', ok:false},{t:'ไมโตคอนเดรีย', ok:false}
+    ]},
+    {id:'Q9', dim:'K', points:2, type:'mcq', prompt:'ข้อใดต่างกันชัดเจนระหว่างโปรคาริโอตกับยูคาริโอต', options:[
+      {t:'โปรคาริโอตไม่มีนิวเคลียสหุ้มเยื่อ', ok:true},{t:'โปรคาริโอตมีเยื่อหุ้มเซลล์', ok:false},{t:'ยูคาริโอตไม่มีไรโบโซม', ok:false},{t:'ทั้งสองไม่มี DNA', ok:false}
+    ]},
+    {id:'Q10', dim:'K', points:1.5, type:'short', prompt:'ออร์แกเนลล์ที่ผลิตพลังงานหลักให้เซลล์คือ ______', answers:['ไมโตคอนเดรีย','mitochondria','ไมโตคอนเดรียา']},
+    {id:'Q11', dim:'K', points:2, type:'mcq', prompt:'เรียงลำดับระดับการจัดระบบจากเล็ก → ใหญ่ ข้อใดถูกต้อง', options:[
+      {t:'เซลล์ → เนื้อเยื่อ → อวัยวะ → ระบบอวัยวะ → สิ่งมีชีวิต', ok:true},
+      {t:'เนื้อเยื่อ → เซลล์ → อวัยวะ → ระบบอวัยวะ → สิ่งมีชีวิต', ok:false},
+      {t:'อวัยวะ → เซลล์ → เนื้อเยื่อ → ระบบอวัยวะ → สิ่งมีชีวิต', ok:false},
+      {t:'เซลล์ → อวัยวะ → เนื้อเยื่อ → ระบบอวัยวะ → สิ่งมีชีวิต', ok:false}
+    ]},
+    {id:'Q12', dim:'K', points:2, type:'mcq', prompt:'เยื่อหุ้มเซลล์มีสมบัติสำคัญอย่างไร', options:[
+      {t:'ปล่อยทุกสิ่งผ่านได้อย่างอิสระ', ok:false},{t:'เลือกผ่าน (selectively permeable)', ok:true},{t:'แข็งเหมือนกระดูก', ok:false},{t:'ทำหน้าที่สร้างพลังงาน', ok:false}
+    ]},
+    {id:'Q13', dim:'K', points:2, type:'mcq', prompt:'ไซโทพลาซึมหมายถึงข้อใด', options:[
+      {t:'ของเหลวภายในเซลล์ที่มีออร์แกเนลล์ลอยอยู่', ok:true},{t:'เยื่อที่หุ้มนิวเคลียส', ok:false},{t:'โครงสร้างโปรตีนบนผนังเซลล์พืช', ok:false},{t:'สารพันธุกรรมทั้งหมดของสิ่งมีชีวิต', ok:false}
+    ]},
+    {id:'Q14', dim:'K', points:1.5, type:'mcq', prompt:'ภาพที่เห็นผ่านกล้องจุลทรรศน์ประกอบเลนส์กลับด้านอย่างไร', options:[
+      {t:'ไม่กลับด้าน', ok:false},{t:'กลับหัว–กลับซ้ายขวา', ok:true},{t:'กลับหัวอย่างเดียว', ok:false},{t:'กลับซ้ายขวาอย่างเดียว', ok:false}
+    ]},
+    {id:'Q15', dim:'K', points:2, type:'mcq', prompt:'ส่วนใดช่วยรวมแสงให้ตกกระทบตัวอย่างได้เหมาะสม', options:[
+      {t:'คอนเดนเซอร์ (condenser)', ok:true},{t:'แขนกล้อง', ok:false},{t:'ฐานกล้อง', ok:false},{t:'แหนบหนีบสไลด์', ok:false}
+    ]},
+    {id:'Q16', dim:'K', points:1.5, type:'short', prompt:'เซลล์เป็น ______ ของสิ่งมีชีวิต', answers:['หน่วยพื้นฐาน','หน่วยพื้นฐานของสิ่งมีชีวิต']},
+
+    // ===== P (14 ข้อ | รวม 38 คะแนน) =====
+    {id:'Q17', dim:'P', points:2, type:'mcq', prompt:'เริ่มโฟกัสตัวอย่างอย่างปลอดภัยควรทำอย่างไรเป็นขั้นแรก', options:[
+      {t:'เริ่มที่เลนส์กำลังสูงและปรับหยาบ', ok:false},{t:'เริ่มที่เลนส์กำลังต่ำ ปรับหยาบช้า ๆ', ok:true},{t:'เริ่มที่เลนส์กำลังต่ำแต่ปรับละเอียดเท่านั้น', ok:false},{t:'เริ่มหมุนไดอะแฟรมก่อน', ok:false}
+    ]},
+    {id:'Q18', dim:'P', points:2, type:'mcq', prompt:'เมื่อเพิ่มกำลังขยาย สนามการมองเห็น (field of view) จะ...', options:[
+      {t:'กว้างขึ้น', ok:false},{t:'แคบลง', ok:true},{t:'คงเดิม', ok:false},{t:'สว่างขึ้นเสมอ', ok:false}
+    ]},
+    {id:'Q19', dim:'P', points:6, type:'match', prompt:'จับคู่ ส่วนของกล้องจุลทรรศน์ ↔ หน้าที่', pairs:[
+      {L:'เลนส์ใกล้ตา (ocular)', R:'ขยายภาพขั้นที่ 2'},
+      {L:'เลนส์ใกล้วัตถุ (objective)', R:'ขยายภาพขั้นแรก/กำลังขยายหลายระดับ'},
+      {L:'ไดอะแฟรม', R:'ควบคุมปริมาณแสง'},
+      {L:'ปุ่มปรับหยาบ', R:'ปรับภาพให้ชัดแบบรวดเร็ว'},
+      {L:'ปุ่มปรับละเอียด', R:'ปรับภาพให้คมบนกำลังสูง'},
+      {L:'แหนบ/คลิปสไลด์', R:'ยึดสไลด์บนแท่นวาง'}
+    ]},
+    {id:'Q20', dim:'P', points:2, type:'mcq', prompt:'การพกพากล้องจุลทรรศน์ที่ถูกต้องคือข้อใด', options:[
+      {t:'จับเฉพาะเลนส์ใกล้วัตถุ', ok:false},{t:'ถือด้วยมือเดียวตรงฐาน', ok:false},{t:'มือหนึ่งจับแขนกล้อง อีกมือประคองฐาน', ok:true},{t:'จับตรงแท่นวางสไลด์', ok:false}
+    ]},
+    {id:'Q21', dim:'P', points:1, type:'short', prompt:'เลนส์ใกล้ตา 10× และเลนส์ใกล้วัตถุ 40× → กำลังขยายรวม = ______ ×', answers:['400','400×','400 x','400x']},
+    {id:'Q22', dim:'P', points:2, type:'mcq', prompt:'เมื่อเปลี่ยนเป็นเลนส์กำลังสูง ภาพมืดลง ควรทำข้อใดก่อน', options:[
+      {t:'หมุนปุ่มหยาบแรง ๆ', ok:false},{t:'เปิดไดอะแฟรมให้แสงผ่านมากขึ้น', ok:true},{t:'ลดกำลังขยายของเลนส์ใกล้ตา', ok:false},{t:'ดันสไลด์ด้วยมือเปล่า', ok:false}
+    ]},
+    {id:'Q23', dim:'P', points:6, type:'match', prompt:'จับคู่ ออร์แกเนลล์ ↔ หน้าที่', pairs:[
+      {L:'นิวเคลียส', R:'ควบคุมการทำงาน/เก็บสารพันธุกรรม'},
+      {L:'ไมโตคอนเดรีย', R:'สร้างพลังงาน (ATP)'},
+      {L:'ไรโบโซม', R:'สังเคราะห์โปรตีน'},
+      {L:'คลอโรพลาสต์', R:'สังเคราะห์ด้วยแสง'},
+      {L:'แวคิวโอล', R:'เก็บน้ำ/สารต่าง ๆ'},
+      {L:'ผนังเซลล์', R:'พยุงรูปทรง/ป้องกัน'}
+    ]},
+    {id:'Q24', dim:'P', points:2, type:'mcq', prompt:'บนกำลังขยายสูง ควรปรับความชัดด้วย...', options:[
+      {t:'ปุ่มหยาบเท่านั้น', ok:false},{t:'ปุ่มละเอียดเท่านั้น', ok:true},{t:'ไดอะแฟรมเท่านั้น', ok:false},{t:'หมุนฐานกล้อง', ok:false}
+    ]},
+    {id:'Q25', dim:'P', points:7, type:'categorize', prompt:'จัดหมวดลักษณะ โปรคาริโอต vs ยูคาริโอต', cats:{
+      'โปรคาริโอต':['ไม่มีนิวเคลียสหุ้มเยื่อ','ขนาดเซลล์เล็กกว่าโดยทั่วไป','ไม่มีออร์แกเนลล์มีเยื่อหุ้ม'],
+      'ยูคาริโอต':['มีนิวเคลียสหุ้มเยื่อ','มีออร์แกเนลล์มีเยื่อหุ้มหลายชนิด','ขนาดเซลล์ใหญ่กว่าโดยทั่วไป']
+    }},
+    {id:'Q26', dim:'P', points:1, type:'short', prompt:'สนามการมองเห็นกว้าง 4 mm เท่ากับ ______ µm', answers:['4000','4000 µm','4000ไมโครเมตร']},
+    {id:'Q27', dim:'P', points:2, type:'mcq', prompt:'ย้อมเซลล์เยื่อบุกระพุ้งแก้มด้วยเมทิลีนบลูช่วยอย่างไร', options:[
+      {t:'เพิ่มความเปรียบต่างให้เห็นนิวเคลียสชัดขึ้น', ok:true},{t:'ทำให้เซลล์มีชีวิตอยู่ตลอดไป', ok:false},{t:'ทำให้กำลังขยายสูงขึ้น', ok:false},{t:'ลดการสะท้อนของกระจกสไลด์', ok:false}
+    ]},
+    {id:'Q28', dim:'P', points:2, type:'mcq', prompt:'ถ้า FOV = 2 mm และตัวอย่างกินพื้นที่ ~1/4 ของเส้นผ่านศูนย์กลาง ขนาดตัวอย่างประมาณเท่าไร', options:[
+      {t:'0.2 mm', ok:false},{t:'0.5 mm (≈ 500 µm)', ok:true},{t:'2.0 mm', ok:false},{t:'4.0 mm', ok:false}
+    ]},
+    {id:'Q29', dim:'P', points:1, type:'short', prompt:'ทำไมจึงวางแผ่นปิดสไลด์ (cover slip) เอียงทำมุมแล้วค่อย ๆ วางลง? ______', keyw:['ฟองอากาศ','ลดฟอง','อากาศ','bubble']},
+    {id:'Q30', dim:'P', points:2, type:'mcq', prompt:'เมื่อเลื่อนสไลด์ไปทางซ้าย ภาพในกล้องจะ...', options:[
+      {t:'เลื่อนไปทางซ้ายเหมือนกัน', ok:false},{t:'เลื่อนไปทางขวา', ok:true},{t:'ไม่เปลี่ยนตำแหน่ง', ok:false},{t:'หมุน 180°', ok:false}
+    ]},
+
+    // ===== A (10 ข้อ | รวม 32 คะแนน) =====
+    {id:'Q31', dim:'A', points:2, type:'mcq', prompt:'ต้องการสำรวจสิ่งมีชีวิตขนาดเล็กในน้ำนิ่ง ควรเริ่มด้วยเลนส์ใด', options:[
+      {t:'กำลังต่ำ (4×) แล้วค่อยเพิ่ม', ok:true},{t:'กำลังสูงสุดทันที', ok:false},{t:'เฉพาะเลนส์ใกล้ตาเท่านั้น', ok:false},{t:'ไม่ต้องใช้เลนส์ใกล้วัตถุ', ok:false}
+    ]},
+    {id:'Q32', dim:'A', points:2, type:'mcq', prompt:'การวาดภาพเชิงวิทยาศาสตร์จากกล้องควรทำอย่างไร', options:[
+      {t:'ใส่ชื่อ/กำลังขยาย/ป้ายกำกับเส้นตรง และระบายเฉดสีให้น้อย', ok:true},{t:'วาดตามใจ/ไม่ต้องระบุข้อมูล', ok:false},{t:'ลงสีฉูดฉาดเพื่อความสวยงาม', ok:false},{t:'ไม่ต้องใส่สเกลหรือกำลังขยาย', ok:false}
+    ]},
+    {id:'Q33', dim:'A', points:2, type:'mcq', prompt:'ถ้าต้องการวัดขนาดเซลล์จากภาพถ่าย กลวิธีใดเหมาะสมที่สุด', options:[
+      {t:'ใช้สเกลบาร์/ทราบ FOV แล้วคำนวณสัดส่วน', ok:true},{t:'ใช้ไม้บรรทัดทาบจอภาพ', ok:false},{t:'เดาด้วยสายตา', ok:false},{t:'เพิ่มความสว่างเท่านั้น', ok:false}
+    ]},
+    {id:'Q34', dim:'A', points:2, type:'mcq', prompt:'ต้องการเปรียบเทียบโครงสร้างเซลล์พืชกับเซลล์สัตว์ในการทดลองเดียว ควรเลือกอะไรเพิ่ม', options:[
+      {t:'สารย้อมสีที่ต้านทานต่างกันเพื่อเห็นออร์แกเนลล์เด่น', ok:true},{t:'เพิ่มกำลังขยายสูงสุดอย่างเดียว', ok:false},{t:'ย้อมสีแบบสุ่มโดยไม่จดบันทึก', ok:false},{t:'ไม่ต้องล้างสไลด์ระหว่างตัวอย่าง', ok:false}
+    ]},
+    {id:'Q35', dim:'A', points:4, type:'ms', prompt:'เลือกแนวปฏิบัติที่ปลอดภัยและดูแลกล้องได้ถูกต้อง (เลือกได้มากกว่า 1)', options:[
+      {t:'ยกด้วยสองมือ (แขนกล้อง + ฐาน)', ok:true},
+      {t:'เช็ดเลนส์ด้วยกระดาษเช็ดเลนส์เท่านั้น', ok:true},
+      {t:'เริ่ม/จบที่กำลังต่ำ เก็บด้วยผ้าคลุม', ok:true},
+      {t:'เป่าเลนส์ด้วยปากเพื่อไล่ฝุ่น', ok:false}
+    ]},
+    {id:'Q36', dim:'A', points:4, type:'ms', prompt:'การใช้หน่วยและการแปลงหน่วยที่ถูกต้องคือข้อใดบ้าง', options:[
+      {t:'1 mm = 1000 µm', ok:true},{t:'1 µm = 1000 nm', ok:true},{t:'1 cm = 1 µm', ok:false},{t:'2.5 mm = 2500 µm', ok:true}
+    ]},
+    {id:'Q37', dim:'A', points:4, type:'ms', prompt:'ต้องการศึกษาผลของสารละลายเกลือต่อเซลล์ผิวใบหอมแดง ควรทำขั้นตอนใด', options:[
+      {t:'เตรียมสไลด์เปียกของผิวใบหอมแดง', ok:true},{t:'หยดสารละลาย NaCl และปิด cover slip', ok:true},{t:'สังเกตการเปลี่ยนแปลง (plasmolysis) และบันทึก', ok:true},{t:'กดทับสไลด์แรง ๆ เพื่อให้บางที่สุด', ok:false}
+    ]},
+    {id:'Q38', dim:'A', points:4, type:'short', prompt:'อธิบายแผนประมาณขนาดเซลล์กระพุ้งแก้มโดยใช้ค่า FOV ที่ทราบ (2–3 ประโยค)', keyw:['FOV','สัดส่วน','ไมโครเมตร','ประมาณ','คำนวณ','เส้นผ่านศูนย์กลาง']},
+    {id:'Q39', dim:'A', points:4, type:'short', prompt:'ยกตัวอย่างการประยุกต์ใช้กล้องจุลทรรศน์ในงานสุขภาพ/สิ่งแวดล้อม พร้อมแนวทางความปลอดภัยในการเก็บตัวอย่าง', keyw:['วินิจฉัย','จุลชีพ','ความปลอดภัยชีวภาพ','ย้อมสี','บันทึกข้อมูล']},
+    {id:'Q40', dim:'A', points:4, type:'short', prompt:'ออกแบบแนวทางสื่อสาร “ทฤษฎีเซลล์” ให้เด็ก ป.6 เข้าใจง่าย (อุปมา/แผนภาพ/ตัวอย่าง)', keyw:['อุปมา','แผนภาพ','ตัวอย่าง','เรียบง่าย','สาระสำคัญ']}
+  ]
+};
+
+// ========== Render ==========
+const quizEl = byId('quiz');
+function render(){
+  quizEl.innerHTML = '';
+  const dims = [
+    {key:'K', title:'ส่วนที่ 1: ความรู้ (K)', target: QUIZ.meta.weights.K},
+    {key:'P', title:'ส่วนที่ 2: กระบวนการ (P)', target: QUIZ.meta.weights.P},
+    {key:'A', title:'ส่วนที่ 3: การประยุกต์ (A)', target: QUIZ.meta.weights.A}
+  ];
+  dims.forEach(d=>{
+    const items = QUIZ.items.filter(x=>x.dim===d.key);
+    const totalPts = items.reduce((s,x)=>s+x.points,0);
+    const sec = document.createElement('section'); sec.className='panel';
+    const h = document.createElement('h2'); h.textContent = `${d.title} — ${items.length} ข้อ / ${totalPts} คะแนน`; sec.appendChild(h);
+    items.forEach((q,idx)=> sec.appendChild(renderItem(q, idx+1, d.key)) );
+    quizEl.appendChild(sec);
+  });
+  restoreState();
+  updateProgress();
+}
+
+function renderItem(q, num, dim){
+  const card = document.createElement('div'); card.className = 'card';
+  const head = document.createElement('div');
+  head.innerHTML = `<h3>${q.id}. <span style="opacity:.8">(${q.points} คะแนน / ${dim})</span></h3><div class="qwrap">${q.prompt}</div>`;
+  card.appendChild(head);
+  const body = document.createElement('div');
+
+  if(q.type==='mcq'){
+    const name = q.id;
+    (q.options||[]).forEach((op,i)=>{
+      const row = document.createElement('label'); row.className='opt';
+      row.innerHTML = `<input type="radio" name="${name}" value="${i}"> <div>${op.t}</div>`;
+      body.appendChild(row);
+    });
+  } else if(q.type==='ms'){
+    (q.options||[]).forEach((op,i)=>{
+      const row = document.createElement('label'); row.className='opt';
+      row.innerHTML = `<input type="checkbox" data-id="${q.id}" value="${i}"> <div>${op.t}</div>`;
+      body.appendChild(row);
+    });
+  } else if(q.type==='short'){
+    const ta = document.createElement('textarea'); ta.placeholder = 'พิมพ์คำตอบสั้น ๆ'; ta.dataset.id=q.id; body.appendChild(ta);
+  } else if(q.type==='match'){
+    const pairs = q.pairs.map(p=>({...p}));
+    const L = pairs; const rights = shuffle(pairs.map(p=>p.R));
+    const pairsWrap = document.createElement('div');
+    L.forEach((p,i)=>{
+      const row = document.createElement('div'); row.className='pair-row';
+      row.innerHTML = `<div class="small" style="color:var(--muted)">${p.L}</div><div class="center">→</div>`;
+      const dz = document.createElement('div'); dz.className='dropzone'; dz.dataset.id = q.id+"__L"+i; dz.dataset.expect = p.R; row.appendChild(dz);
+      pairsWrap.appendChild(row);
+    });
+    const tokenBox = document.createElement('div'); rights.forEach(r=>{ const t=document.createElement('span'); t.textContent=r; t.className='token'; t.draggable=true; t.dataset.val=r; t.dataset.from=q.id; tokenBox.appendChild(t); });
+    const cols = document.createElement('div'); cols.className='cols';
+    const leftBox = document.createElement('div'); leftBox.appendChild(pairsWrap);
+    const rightBox = document.createElement('div'); rightBox.innerHTML='<div class="small" style="color:var(--muted)">ลากปุ่มสีน้ำเงินมาวางที่ช่องว่าง</div>'; rightBox.appendChild(tokenBox);
+    cols.appendChild(leftBox); cols.appendChild(rightBox); body.appendChild(cols);
+  } else if(q.type==='categorize'){
+    const allItems = shuffle(Object.values(q.cats).flat());
+    const binsWrap = document.createElement('div'); binsWrap.className='cols';
+    Object.keys(q.cats).forEach(cat=>{
+      const box = document.createElement('div'); box.className='card';
+      box.innerHTML = `<b>${cat}</b><div class="dropzone" data-cat="${cat}" data-id="${q.id}"></div>`; binsWrap.appendChild(box);
+    });
+    const src = document.createElement('div'); src.className='card';
+    const srcList = document.createElement('div');
+    allItems.forEach(it=>{ const t=document.createElement('span'); t.textContent=it; t.className='token'; t.draggable=true; t.dataset.val=it; t.dataset.from=q.id; srcList.appendChild(t); });
+    src.innerHTML='<b>ลากไปใส่หมวดหมู่ที่ถูกต้อง</b>'; src.appendChild(srcList);
+    const cols = document.createElement('div'); cols.className='cols'; cols.appendChild(src); cols.appendChild(binsWrap); body.appendChild(cols);
+  }
+
+  card.appendChild(body);
+  return card;
+}
+
+// Drag & Drop for tokens
+let dragToken=null;
+document.addEventListener('dragstart',e=>{ if(e.target.classList.contains('token')) dragToken=e.target; });
+document.addEventListener('dragover',e=>{ if(e.target.classList.contains('dropzone')) e.preventDefault(); });
+document.addEventListener('drop',e=>{ if(!dragToken) return; const dz=e.target.closest('.dropzone'); if(dz){ dz.appendChild(dragToken); saveState(); updateProgress(); }});
+
+document.addEventListener('change', e=>{ if(e.target.matches('input, select')){ saveState(); updateProgress(); } });
+document.addEventListener('input', e=>{ if(e.target.matches('textarea')){ saveState(); updateProgress(); } });
+
+// ========== Scoring ==========
+function scoreItem(q){
+  if(q.type==='mcq'){
+    const sel = $$(`input[name="${q.id}"]:checked`);
+    if(sel.length===0) return {pts:0, resp:''};
+    const i = parseInt(sel[0].value,10); const ok = q.options[i]?.ok; return {pts: ok? q.points:0, resp: q.options[i]?.t||''};
+  }
+  if(q.type==='ms'){
+    const cbs = $$(`input[type=checkbox][data-id="${q.id}"]`); if(cbs.length===0) return {pts:0, resp:''};
+    let selIdx=[], selTxt=[]; cbs.forEach((cb,i)=>{ if(cb.checked){ selIdx.push(i); selTxt.push(q.options[i].t);} });
+    const totalCorrect = q.options.filter(o=>o.ok).length;
+    const correctSelected = selIdx.filter(i=>q.options[i].ok).length;
+    const wrongSelected = selIdx.filter(i=>!q.options[i].ok).length;
+    let frac = Math.max(0, (correctSelected/Math.max(1,totalCorrect)) - (wrongSelected/Math.max(1,q.options.length-totalCorrect))*0.5 );
+    const pts = Math.round(q.points * frac * 100)/100; return {pts, resp: selTxt.join(' | ')};
+  }
+  if(q.type==='short'){
+    const ta = $$(`textarea[data-id="${q.id}"]`)[0]; const ans = normalizeText(ta?.value||''); if(!ans) return {pts:0, resp:''};
+    if(q.answers){ const ok = q.answers.some(a=> ans.includes(normalizeText(a)) ); return {pts: ok? q.points:0, resp: ta.value}; }
+    if(q.keyw){ let hit=0; q.keyw.forEach(k=>{ if(ans.includes(normalizeText(k))) hit++; }); const pts = hit>=2? q.points : (hit===1? Math.round(q.points*0.5):0); return {pts, resp: ta.value}; }
+    return {pts:0, resp:ta.value};
+  }
+  if(q.type==='match'){
+    const rows = $$(`.dropzone[data-id^="${q.id}__L"]`); const per = q.points / rows.length; let pts=0, resp=[];
+    rows.forEach(r=>{ const tok=r.querySelector('.token'); const got = tok?.dataset.val||''; const expect = r.dataset.expect; if(got && normalizeText(got)===normalizeText(expect)) pts+=per; resp.push(`${r.previousSibling.previousSibling?.textContent||''}=>${got}`); });
+    return {pts: Math.round(pts*100)/100, resp: resp.join(' | ')};
+  }
+  if(q.type==='categorize'){
+    const cats = Object.keys(q.cats); const total = Object.values(q.cats).flat().length; const per = q.points/total; let pts=0; let resp=[];
+    cats.forEach(cat=>{ const box = $(`.dropzone[data-id="${q.id}"][data-cat="${cat}"]`); const toks = $$('.token', box); toks.forEach(t=>{ if(q.cats[cat].includes(t.dataset.val)) pts+=per; }); resp.push(`${cat}:{${toks.map(t=>t.dataset.val).join('; ')}}`); });
+    return {pts: Math.round(pts*100)/100, resp: resp.join(' | ')};
+  }
+  return {pts:0, resp:''};
+}
+
+function compute(){
+  const sums = {K:0,P:0,A:0,total:0}; const answers = [];
+  QUIZ.items.forEach(q=>{ const {pts, resp} = scoreItem(q); sums[q.dim]+=pts; sums.total += pts; answers.push({id:q.id, dim:q.dim, type:q.type, pts, resp}); });
+  for(const k of ['K','P','A','total']) sums[k] = Math.round(sums[k]*100)/100;
+  return {sums, answers};
+}
+
+// ========== State (LocalStorage) ==========
+const KEY='midterm_microscope_cell_M1_state_v1';
+function saveState(){
+  const state={
+    name: byId('name').value, sid: byId('sid').value, room: byId('room').value,
+    radios:{}, checks:{}, shorts:{}, dnd:{}, cats:{},
+    selfK: byId('selfK').value, selfP: byId('selfP').value, selfA: byId('selfA').value, reflection: byId('reflection').value
+  };
+  QUIZ.items.forEach(q=>{
+    if(q.type==='mcq'){
+      const r = $$(`input[name="${q.id}"]:checked`)[0]; if(r) state.radios[q.id]=r.value;
+    } else if(q.type==='ms'){
+      const arr=[]; $$(`input[type=checkbox][data-id="${q.id}"]`).forEach((cb,i)=>{ if(cb.checked) arr.push(i); }); state.checks[q.id]=arr;
+    } else if(q.type==='short'){
+      const ta = $$(`textarea[data-id="${q.id}"]`)[0]; if(ta) state.shorts[q.id]=ta.value;
+    } else if(q.type==='match'){
+      const rows = $$(`.dropzone[data-id^="${q.id}__L"]`); state.dnd[q.id]=rows.map(r=>{ const tok=r.querySelector('.token'); return tok? tok.dataset.val:''; });
+    } else if(q.type==='categorize'){
+      const entry={}; Object.keys(q.cats).forEach(cat=>{ const box = $(`.dropzone[data-id="${q.id}"][data-cat="${cat}"]`); entry[cat]= $$('.token', box).map(t=>t.dataset.val); }); state.cats[q.id]=entry;
+    }
+  });
+  localStorage.setItem(KEY, JSON.stringify(state));
+}
+
+function restoreState(){
+  const raw = localStorage.getItem(KEY); if(!raw) return;
+  try{
+    const s = JSON.parse(raw);
+    byId('name').value = s.name||''; byId('sid').value = s.sid||''; byId('room').value = s.room||'';
+    QUIZ.items.forEach(q=>{
+      if(q.type==='mcq'){
+        const v = s.radios?.[q.id]; if(v!==undefined){ const r = $$(`input[name="${q.id}"][value="${v}"]`)[0]; if(r) r.checked=true; }
+      } else if(q.type==='ms'){
+        (s.checks?.[q.id]||[]).forEach(i=>{ const cb = $$(`input[type=checkbox][data-id="${q.id}"][value="${i}"]`)[0]; if(cb) cb.checked=true; });
+      } else if(q.type==='short'){
+        const ta = $$(`textarea[data-id="${q.id}"]`)[0]; if(ta) ta.value = s.shorts?.[q.id]||'';
+      } else if(q.type==='match'){
+        const rows = $$(`.dropzone[data-id^="${q.id}__L"]`); const vals = s.dnd?.[q.id]||[];
+        rows.forEach((r,i)=>{ const expect = vals[i]; if(expect){ const token = $$(`.token[data-from="${q.id}"]`).find(t=>t.dataset.val===expect); if(token) r.appendChild(token); }});
+      } else if(q.type==='categorize'){
+        const entry = s.cats?.[q.id]||{}; Object.keys(entry).forEach(cat=>{ const box = $(`.dropzone[data-id="${q.id}"][data-cat="${cat}"]`); (entry[cat]||[]).forEach(val=>{ const token = $$(`.token[data-from="${q.id}"]`).find(t=>t.dataset.val===val); if(token) box.appendChild(token); }); });
+      }
+    });
+    byId('selfK').value = s.selfK||''; byId('selfP').value = s.selfP||''; byId('selfA').value = s.selfA||''; byId('reflection').value = s.reflection||'';
+  }catch(e){ console.warn('restore error', e); }
+}
+
+function resetAll(){ localStorage.removeItem(KEY); location.reload(); }
+
+function updateProgress(){
+  const totalInputs = $$('input[type=radio], input[type=checkbox], textarea').length + $$('.dropzone').length;
+  let filled = $$('input[type=radio]:checked, input[type=checkbox]:checked').length;
+  $$('textarea').forEach(t=>{ if(t.value.trim().length>0) filled++; });
+  $$('.dropzone').forEach(d=>{ if(d.querySelector('.token')) filled++; });
+  const pct = Math.min(100, Math.round(100*filled/Math.max(1,totalInputs)));
+  byId('progbar').style.width = pct+'%';
+}
+
+// ========== Export ==========
+function exportCSV(res){
+  const name = byId('name').value||''; const sid = byId('sid').value||''; const room = byId('room').value||'';
+  const selfK = byId('selfK').value||''; const selfP = byId('selfP').value||''; const selfA = byId('selfA').value||''; const reflection = byId('reflection').value||''; const ua = navigator.userAgent; const ts = new Date().toISOString();
+  const headers = ['Timestamp','Name','StudentId','Room','UserAgent', ...QUIZ.items.map(q=>`${q.id}_resp`), ...QUIZ.items.map(q=>`${q.id}_pts`),'K_score','P_score','A_score','Total_score','SelfK','SelfP','SelfA','Reflection'];
+  const row = [ts,name,sid,room,ua, ...res.answers.map(a=>a.resp), ...res.answers.map(a=>a.pts), res.sums.K,res.sums.P,res.sums.A,res.sums.total,selfK,selfP,selfA,reflection].map(escapeCsv).join(',');
+  const csv = headers.join(',')+'\n'+row+'\n'; const fname = `Midterm_MicroscopeCell_M1_${sid||'noid'}.csv`; download(fname, csv);
+}
+function exportJSON(res){
+  const payload = { meta: QUIZ.meta, student: {name:byId('name').value||'', sid:byId('sid').value||'', room:byId('room').value||''}, sums: res.sums, answers: res.answers, self: {K:byId('selfK').value||'', P:byId('selfP').value||'', A:byId('selfA').value||'', reflection: byId('reflection').value||''}, ts: new Date().toISOString(), ua: navigator.userAgent };
+  download(`Midterm_MicroscopeCell_M1_${payload.student.sid||'noid'}.json`, JSON.stringify(payload,null,2));
+}
+
+// ========== Wire buttons ==========
+byId('calcBtn').addEventListener('click',()=>{ const res = compute(); byId('sumK').textContent = res.sums.K.toFixed(2); byId('sumP').textContent = res.sums.P.toFixed(2); byId('sumA').textContent = res.sums.A.toFixed(2); byId('sumTotal').textContent = `${res.sums.total.toFixed(2)} / 100`; byId('exportCsvBtn').disabled=false; byId('exportJsonBtn').disabled=false; saveState(); });
+byId('exportCsvBtn').addEventListener('click',()=>{ const res = compute(); exportCSV(res); });
+byId('exportJsonBtn').addEventListener('click',()=>{ const res = compute(); exportJSON(res); });
+byId('resetBtn').addEventListener('click',()=>{ if(confirm('ยืนยันล้างคำตอบทั้งหมด?')) resetAll(); });
+
+render();
+</script>
+</body>
+</html>

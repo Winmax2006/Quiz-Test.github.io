@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Performance Task: ออกแบบยอดพระปรางค์สามยอด (สมัยพระนารายณ์)</title>
+  <script>
+    // === ใส่ URL เว็บแอปของ Apps Script ที่ Deploy แล้ว ===
+    const WEB_APP_URL = ""; // ← ใส่ https://script.google.com/macros/s/…/exec ที่คุณ deploy
+  </script>
+  <style>
+    :root{
+      --bg:#0b122a;--panel:#0f1c3a;--card:#152441;--ink:#e6f1ff;--muted:#bcd3ff;--line:#2b3f63;--accent:#38bdf8;--accent2:#60a5fa;--okay:#22c55e;--warn:#f59e0b;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:"Noto Sans Thai",system-ui,Segoe UI,Inter,sans-serif;background:radial-gradient(1200px 600px at 20% -10%, #132a57, transparent),linear-gradient(180deg,#0b1328,#0b122a 40%,#0a0f21);color:var(--ink)}
+    header{position:sticky;top:0;z-index:5;background:rgba(15,28,58,.75);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+    .wrap{max-width:1200px;margin:auto;padding:16px}
+    h1{margin:.2rem 0;color:var(--accent)}
+    .sub{color:var(--muted)}
+
+    main{max-width:1200px;margin:auto;padding:18px}
+    .split{display:grid;grid-template-columns:minmax(0,2fr) minmax(320px,1fr);gap:16px}
+    .left,.right{display:grid;gap:16px;align-content:start}
+    .right{position:sticky;top:72px;height:calc(100dvh - 90px);overflow:auto;padding-bottom:16px}
+
+    .card{background:linear-gradient(180deg,var(--card),#0f1c3a);border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 24px rgba(0,0,0,.35)}
+    .hd{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+    .bd{padding:16px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .row{display:grid;gap:10px;margin-bottom:12px}
+    label{font-size:.95rem;color:var(--muted)}
+    select, textarea, input[type=text]{width:100%;padding:10px;border:1px solid var(--line);border-radius:12px;background:#0b162d;color:var(--ink)}
+    textarea{min-height:80px}
+    .viz{display:flex;justify-content:center;align-items:center;background:#0b162d;border:1px solid var(--line);border-radius:12px;height:320px}
+    .thumb{height:240px}
+    svg{max-width:100%;height:100%}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{appearance:none;border:1px solid var(--line);background:linear-gradient(180deg,#0f1c3a,#0b162d);color:var(--ink);padding:10px 14px;border-radius:12px;cursor:pointer}
+    .btn.primary{background:linear-gradient(180deg,#1e40af,#1d4ed8);border-color:#2b5ad6}
+    .btn.ghost{background:transparent}
+    .kicker{color:#c5e4ff;font-size:.9rem}
+    .note{color:var(--muted)}
+    .stepTitle{font-weight:700}
+    .sum{border:1px dashed var(--line);border-radius:12px;padding:12px;background:#0b162d}
+    .copy{font-size:.85rem;color:#a5d5ff;cursor:pointer;text-decoration:underline}
+    .aiSec .bd{display:grid;gap:10px}
+    .aiSec textarea{min-height:60px}
+    .pill{padding:6px 10px;border-radius:999px;border:1px solid var(--line);font-size:.85rem}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Performance Task: ออกแบบยอดพระปรางค์สามยอด (สมัยพระนารายณ์)</h1>
+      <div class="sub">โจทย์ลำดับขั้น (Iterative) • ซ้าย: “กระบวนการทำผลงาน” • ขวา: “วิธีการได้มา (AI Trace)” • ใช้เวลา ~10 นาที</div>
+      <div class="toolbar" style="margin-top:10px;gap:8px;flex-wrap:wrap">
+        <button class="btn" id="btnUser">ใส่ข้อมูลผู้สอบ</button>
+        <button class="btn primary" id="btnSubmit">ส่งคำตอบ</button>
+        <button class="btn" id="btnCSV">Export CSV</button>
+        <button class="btn" id="btnSummary">สรุปคะแนนภาพรวม</button>
+        <span class="note pill" id="pillStatus"></span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- User Panel -->
+    <section class="card" id="userPanel" style="max-width:1200px;margin:16px auto;display:none">
+      <div class="hd"><b>ข้อมูลผู้สอบ</b></div>
+      <div class="bd grid" style="grid-template-columns:1fr 1fr">
+        <div class="row">
+          <label>ชื่อ–สกุล (Name)</label>
+          <input type="text" id="user_name" placeholder="เช่น อาทิตยา ใจดี" />
+        </div>
+        <div class="row">
+          <label>รหัสนักเรียน (Student ID)</label>
+          <input type="text" id="user_sid" placeholder="เช่น 2025-001" />
+        </div>
+        <div class="toolbar">
+          <button class="btn primary" id="btnSaveUser">บันทึก</button>
+          <button class="btn ghost" id="btnCloseUser">ปิด</button>
+          <span class="note" id="userHint">บันทึกแล้วจะจำในเครื่อง (local)</span>
+        </div>
+      </div>
+    </section>
+    <div class="split">
+      <!-- LEFT: กระบวนการสร้างผลงาน -->
+      <div class="left">
+        <section class="card">
+          <div class="hd">
+            <div class="stepTitle">ขั้นนำ: ฐานเดิม (คงรูปร่างพระปรางค์ไว้)</div>
+          </div>
+          <div class="bd grid">
+            <div>
+              <p class="kicker">ฐาน: ใช้รูปทรงพระปรางค์แบบลพบุรี/บายน เป็นพื้น (ไม่แก้)</p>
+              <div class="viz" id="baseViz"></div>
+              <p class="note">หมายเหตุ: งานนี้เน้น <b>ส่วนยอด/ชั้นบนและองค์ประกอบทางเข้า</b></p>
+            </div>
+            <div>
+              <div class="sum">
+                <div><b>แนวคิด:</b> ผสมศิลปะเขมรบายนกับรสนิยมอยุธยายุคพระนารายณ์ (เถรวาท/วิหารประกอบ)</div>
+                <div class="note">ค้นแรงบันดาลใจ: “Bayon finial”, “Ayutthaya stucco”, “Khmer false door”, “lintel kala-makara”</div>
+                <div class="copy" id="copyPrompt0">คัดลอก Prompt แนะนำสำหรับ ChatGPT</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ขั้น 1 -->
+        <section class="card">
+          <div class="hd"><div class="stepTitle">ขั้น 1: เลือกแนวทางยอด (จุดเน้นหลัก)</div></div>
+          <div class="bd grid">
+            <div>
+              <div class="row">
+                <label>1A) แนวทางหลักของยอด</label>
+                <select id="s1_theme">
+                  <option value="devotion">ศาสนา/ศรัทธา (Devotional)</option>
+                  <option value="hybrid">ผสมผสานวัฒนธรรม (Hybrid Khmer–Ayutthaya)</option>
+                  <option value="royal">อำนาจ/รัฐพิธี (Royal/Political Symbol)</option>
+                </select>
+              </div>
+              <div class="row">
+                <label>1B) รูปแบบยอด (Finial)</label>
+                <select id="s1_finial">
+                  <option value="lotus">กลีบบัว (Lotus-bud)</option>
+                  <option value="chatra3">ฉัตร 3 ชั้น (Chatra x3)</option>
+                  <option value="chatra5">ฉัตร 5 ชั้น (Chatra x5)</option>
+                  <option value="flame">เปลว/ยอดปรางค์ (Flame)</option>
+                </select>
+              </div>
+              <div class="row">
+                <label>1C) จำนวนชั้นบน (Upper tiers)</label>
+                <select id="s1_tiers">
+                  <option value="1">1 ชั้น</option>
+                  <option value="2" selected>2 ชั้น</option>
+                  <option value="3">3 ชั้น</option>
+                </select>
+              </div>
+              <div class="row">
+                <label>1D) เหตุผล/คำอธิบายสั้น ๆ</label>
+                <textarea id="s1_reason" placeholder="ทำไมจึงเลือกแนวทางนี้? เกี่ยวโยงศาสนา/วัฒนธรรมอย่างไร"></textarea>
+              </div>
+            </div>
+            <div>
+              <div class="viz thumb" id="s1_viz"></div>
+              <div class="toolbar"><button class="btn primary" id="s1_apply">บันทึก → ขั้น 2</button><button class="btn ghost" id="s1_rand">สุ่มไอเดีย</button></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ขั้น 2 -->
+        <section class="card">
+          <div class="hd"><div class="stepTitle">ขั้น 2: ปรับปัจจัย/ลวดลาย และเหตุผล</div></div>
+          <div class="bd grid">
+            <div>
+              <div class="row">
+                <label>2A) วัสดุ/ผิว (Finish)</label>
+                <select id="s2_mat">
+                  <option value="stucco">อิฐฉาบปูนขาว (Stucco)</option>
+                  <option value="laterite">ศิลาแลง (Laterite)</option>
+                  <option value="sandstone">หินทราย (Sandstone)</option>
+                </select>
+              </div>
+              <div class="row">
+                <label>2B) ลวดลายชั้นบน</label>
+                <select id="s2_motif">
+                  <option value="smooth">ผิวเรียบ</option>
+                  <option value="khmerFaces">ซุ้ม/หน้าบายน (นัยยะเขมร)</option>
+                  <option value="garuda">ครุฑ/เครือเถาแบบอยุธยา</option>
+                  <option value="hybrid">ผสม (Khmer + Ayutthaya)</option>
+                </select>
+              </div>
+              <div class="row">
+                <label>2C) เหตุผล/คำอธิบายสั้น ๆ</label>
+                <textarea id="s2_reason" placeholder="ทำไมเลือกวัสดุ/ลวดลายนี้? สื่อสารวัฒนธรรม/ศาสนาอย่างไร"></textarea>
+              </div>
+            </div>
+            <div>
+              <div class="viz thumb" id="s2_viz"></div>
+              <div class="toolbar"><button class="btn primary" id="s2_apply">บันทึก → ขั้น 3</button><button class="btn ghost" id="s2_rand">สุ่มไอเดีย</button></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ขั้น 3 -->
+        <section class="card">
+          <div class="hd"><div class="stepTitle">ขั้น 3: ปรับซ้ำ (สัดส่วน/องค์ประกอบยอด)</div></div>
+          <div class="bd grid">
+            <div>
+              <div class="row">
+                <label>3A) สัดส่วนยอด/ก้าน (Finial height)</label>
+                <select id="s3_height">
+                  <option value="low">เตี้ย (Low)</option>
+                  <option value="med" selected>ปานกลาง (Medium)</option>
+                  <option value="high">สูง (High)</option>
+                </select>
+              </div>
+              <div class="row">
+                <label>3B) ซุ้มจระนำรอบยอด</label>
+                <select id="s3_niches">
+                  <option value="none">ไม่มี</option>
+                  <option value="buddha">ซุ้มพระพุทธรูป</option>
+                  <option value="bodhisattva">ซุ้มโพธิสัตว์ (อิทธิพลบายน)</option>
+                </select>
+              </div>
+              <div class="row">
+                <label>3C) เหตุผล/คำอธิบายสั้น ๆ</label>
+                <textarea id="s3_reason" placeholder="เลือกสัดส่วน/ซุ้มเพราะเหตุใด? สื่อความหมายอะไร"></textarea>
+              </div>
+            </div>
+            <div>
+              <div class="viz thumb" id="s3_viz"></div>
+              <div class="toolbar"><button class="btn primary" id="s3_apply">บันทึก → ขั้น 4</button><button class="btn ghost" id="s3_rand">สุ่มไอเดีย</button></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ขั้น 4 -->
+        <section class="card">
+          <div class="hd"><div class="stepTitle">ขั้น 4: ทางเข้าประตู/บันได/ทับหลัง (ลวดลาย)</div></div>
+          <div class="bd grid">
+            <div>
+              <div class="row">
+                <label>4A) ประเภททางเข้า</label>
+                <select id="s4_doorType">
+                  <option value="none">ไม่มี (คงเดิม)</option>
+                  <option value="falseDoor">ประตูหลอกแบบขอม (False door)</option>
+                  <option value="realPorch">ประตูจริง + ระเบียงเล็ก</option>
+                </select>
+              </div>
+              <div class="row">
+                <label>4B) ลวดลายทับหลัง/หน้าบัน</label>
+                <select id="s4_lintel">
+                  <option value="plain">ผิวเรียบ</option>
+                  <option value="lotusBand">แถบกลีบบัว</option>
+                  <option value="kalaMakara">กาล–มกรา (Khmer)</option>
+                  <option value="garudaBand">ครุฑยุดนาค (Ayutthaya)</option>
+                </select>
+              </div>
+              <div class="row">
+                <label>4C) บันไดทางขึ้น</label>
+                <select id="s4_stairs">
+                  <option value="none">ไม่มี</option>
+                  <option value="straight">บันไดตรง</option>
+                  <option value="naga">บันไดพร้อมราวนาค</option>
+                </select>
+              </div>
+              <div class="row">
+                <label>4D) เหตุผล/คำอธิบายสั้น ๆ</label>
+                <textarea id="s4_reason" placeholder="เหตุผลในการเลือกประตู/ทับหลัง/บันได และความหมายทางวัฒนธรรม"></textarea>
+              </div>
+            </div>
+            <div>
+              <div class="viz thumb" id="s4_viz"></div>
+              <div class="toolbar"><button class="btn primary" id="s4_apply">สร้างผลลัพธ์สุดท้าย</button><button class="btn ghost" id="s4_rand">สุ่มไอเดีย</button></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ผลลัพธ์ -->
+        <section class="card">
+          <div class="hd"><div class="stepTitle">ผลลัพธ์สุดท้าย (ภาพ + คำอธิบายแนวคิด)</div></div>
+          <div class="bd grid">
+            <div>
+              <div class="viz" id="finalViz"></div>
+              <div class="toolbar">
+                <button class="btn" id="btnDownload">ดาวน์โหลดภาพ PNG</button>
+                <button class="btn" id="btnJSON">ส่งออกผล (JSON)</button>
+                <button class="btn" id="btnCopyPrompt">คัดลอก Prompt สรุป (ChatGPT)</button>
+              </div>
+            </div>
+            <div>
+              <div class="row">
+                <label>คำอธิบายแนวคิด (3–6 บรรทัด)</label>
+                <textarea id="finalText" placeholder="สรุปแนวคิด: ยอด/ลวดลาย/วัสดุ/ประตู–ทับหลัง–บันได สะท้อนศาสนาและวัฒนธรรมในสมัยพระนารายณ์อย่างไร"></textarea>
+              </div>
+              <div class="sum" id="audit"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- RIGHT: วิธีการได้มา (AI Trace per step) -->
+      <aside class="right">
+        <section class="card aiSec">
+          <div class="hd"><b>AI Trace & Reflection</b></div>
+          <div class="bd">
+            <div class="note">บันทึกร่องรอยการใช้ ChatGPT/เครื่องมือ เพื่อให้เห็น “วิธีการได้ความรู้”</div>
+          </div>
+        </section>
+
+        <section class="card aiSec">
+          <div class="hd">Step 0 • ค้นแรงบันดาลใจ</div>
+          <div class="bd">
+            <label>Prompt ที่ใช้</label>
+            <textarea id="ai0_prompt" placeholder="เช่น Bayon vs Ayutthaya finial"></textarea>
+            <label>คำตอบ/ประเด็นสำคัญจาก AI</label>
+            <textarea id="ai0_answer" placeholder="สรุปสั้น 2–4 บรรทัด"></textarea>
+            <label>Reflection</label>
+            <textarea id="ai0_ref" placeholder="คุณเห็นด้วย/ไม่เห็นด้วย หรือจะต่อยอดอย่างไร"></textarea>
+          </div>
+        </section>
+
+        <section class="card aiSec">
+          <div class="hd">Step 1 • แนวทางยอด</div>
+          <div class="bd">
+            <label>Prompt</label>
+            <textarea id="ai1_prompt"></textarea>
+            <label>คำตอบ AI (ย่อ)</label>
+            <textarea id="ai1_answer"></textarea>
+            <label>Reflection</label>
+            <textarea id="ai1_ref"></textarea>
+          </div>
+        </section>
+
+        <section class="card aiSec">
+          <div class="hd">Step 2 • วัสดุ/ลวดลาย</div>
+          <div class="bd">
+            <label>Prompt</label>
+            <textarea id="ai2_prompt"></textarea>
+            <label>คำตอบ AI (ย่อ)</label>
+            <textarea id="ai2_answer"></textarea>
+            <label>Reflection</label>
+            <textarea id="ai2_ref"></textarea>
+          </div>
+        </section>
+
+        <section class="card aiSec">
+          <div class="hd">Step 3 • สัดส่วน/ซุ้ม</div>
+          <div class="bd">
+            <label>Prompt</label>
+            <textarea id="ai3_prompt"></textarea>
+            <label>คำตอบ AI (ย่อ)</label>
+            <textarea id="ai3_answer"></textarea>
+            <label>Reflection</label>
+            <textarea id="ai3_ref"></textarea>
+          </div>
+        </section>
+
+        <section class="card aiSec">
+          <div class="hd">Step 4 • ประตู/ทับหลัง/บันได</div>
+          <div class="bd">
+            <label>Prompt</label>
+            <textarea id="ai4_prompt"></textarea>
+            <label>คำตอบ AI (ย่อ)</label>
+            <textarea id="ai4_answer"></textarea>
+            <label>Reflection</label>
+            <textarea id="ai4_ref"></textarea>
+          </div>
+        </section>
+
+        <section class="card aiSec">
+          <div class="hd">สรุปรวม (Meta Layer)</div>
+          <div class="bd">
+            <label>สิ่งที่ได้เรียนรู้จากการใช้ AI</label>
+            <textarea id="ai_all_learn" placeholder="1–3 ประเด็นที่ได้เรียนรู้จากการใช้ AI"></textarea>
+            <label>จุดที่คุณปรับ/วิจารณ์คำตอบ AI</label>
+            <textarea id="ai_all_crit" placeholder="ยกอย่างน้อย 1 จุด"></textarea>
+          </div>
+        </section>
+      </aside>
+    </div>
+    <section class="card" style="max-width:1200px;margin:16px auto;">
+      <div class="hd"><div class="stepTitle">เส้นลำดับการให้คะแนน (Outcome vs Method) + ความสัมพันธ์ปัจจัย</div></div>
+      <div class="bd">
+        <div class="note">ระบบจะคำนวณคะแนนรายขั้น (1–5) แยกเป็น <b>Outcome</b> = คุณภาพการออกแบบ และ <b>Method</b> = คุณภาพการใช้ AI (Trace)</div>
+        <div class="viz" style="height:260px"><svg id="scoreChart" viewBox="0 0 780 220" preserveAspectRatio="xMidYMid meet"></svg></div>
+        <div class="sum" id="scoreText"></div>
+      </div>
+    </section>
+
+    <!-- สรุปคะแนนภาพรวม (In-sign) -->
+    <section class="card" id="summaryPanel" style="max-width:1200px;margin:16px auto;display:none">
+      <div class="hd"><div class="stepTitle">สรุปคะแนนภาพรวม (Outcome vs Method)</div></div>
+      <div class="bd" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:center">
+        <div class="viz" style="height:260px"><svg id="radialSummary" viewBox="0 0 320 240" preserveAspectRatio="xMidYMid meet"></svg></div>
+        <div class="sum" id="summaryText"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+  // -------- Utility: DOM helpers --------
+  const $ = sel => document.querySelector(sel);
+  function ensureEls(){
+    const req = ['#baseViz','#s1_viz','#s2_viz','#s3_viz','#s4_viz','#finalViz'];
+    for(const s of req){ if(!$(s)) throw new Error('Element missing: '+s); }
+  }
+
+  // -------- State --------
+  const state={
+    user:{ name:"", sid:"" },
+    base:{},
+    s1:{ theme:'devotion', finial:'lotus', tiers:2, reason:'' },
+    s2:{ mat:'stucco', motif:'smooth', reason:'' },
+    s3:{ height:'med', niches:'none', reason:'' },
+    s4:{ doorType:'none', lintel:'plain', stairs:'none', reason:'' },
+    ai:{
+      step0:{prompt:'',answer:'',ref:''},
+      step1:{prompt:'',answer:'',ref:''},
+      step2:{prompt:'',answer:'',ref:''},
+      step3:{prompt:'',answer:'',ref:''},
+      step4:{prompt:'',answer:'',ref:''},
+      meta:{learn:'',crit:''}
+    },
+    scores:{ outcome:[1,1,1,1], method:[1,1,1,1], totalOutcome:0, totalMethod:0 }
+  };
+
+  // -------- Scoring helpers (1–5 per step) --------
+  const kw = ['ศาสนา','วัฒนธรรม','เขมร','อยุธยา','สัญลักษณ์','บายน','พระนารายณ์'];
+  const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+  function reasonScore(txt){
+    if(!txt) return 1;
+    let s = 1;
+    const len = txt.trim().length;
+    if(len>=20) s+=1; if(len>=50) s+=1;
+    let hit = 0; for(const k of kw){ if((txt||'').includes(k)) hit++; }
+    s += Math.min(2, (hit>0?1:0) + (hit>=3?1:0));
+    return clamp(s,1,5);
+  }
+  function aiTraceScore(step){
+    const t = state.ai[step]||{prompt:'',answer:'',ref:''};
+    let s = 1;
+    if((t.prompt||'').length>10) s+=1;
+    if((t.answer||'').length>20) s+=1;
+    if((t.ref||'').length>20) s+=1;
+    const sig = /(ปรับ|วิจารณ์|เหตุผล|เลือก|เปรียบเทียบ|เชื่อมโยง)/;
+    if(sig.test(t.ref||'')) s+=1;
+    return clamp(s,1,5);
+  }
+  function synergyOutcome(stepIdx){
+    const s1=state.s1, s2=state.s2, s3=state.s3, s4=state.s4; let b=0;
+    if(stepIdx===0){
+      if(s1.theme==='hybrid' && s1.finial==='lotus') b+=0.3;
+      if(s1.theme==='royal' && (s1.finial==='chatra5'||s1.finial==='chatra3')) b+=0.5;
+      if(Number(s1.tiers)===2) b+=0.2;
+      b += (reasonScore(s1.reason)-1)*0.15;
+    }
+    if(stepIdx===1){
+      if(s2.motif==='khmerFaces' && s2.mat==='laterite') b+=0.6;
+      if(s2.motif==='garuda' && s2.mat==='stucco') b+=0.6;
+      if(s2.motif==='hybrid') b+=0.4;
+      b += (reasonScore(s2.reason)-1)*0.15;
+    }
+    if(stepIdx===2){
+      if(s3.niches==='bodhisattva' && s2.motif==='khmerFaces') b+=0.6;
+      if(s3.niches==='buddha' && s2.motif==='garuda') b+=0.4;
+      if(String(s1.finial).startsWith('chatra') && s3.height==='high') b+=0.3;
+      if(s1.finial==='lotus' && s3.height!=='high') b+=0.2;
+      b += (reasonScore(s3.reason)-1)*0.15;
+    }
+    if(stepIdx===3){
+      if(s4.doorType==='falseDoor' && s4.lintel==='kalaMakara') b+=0.7;
+      if(s4.doorType==='realPorch' && s4.lintel==='garudaBand') b+=0.5;
+      if(s4.stairs==='naga' && s1.theme==='royal') b+=0.3;
+      b += (reasonScore(s4.reason)-1)*0.15;
+    }
+    return b;
+  }
+  function scoreOutcome(){
+    const base=[1,1,1,1];
+    for(let i=0;i<4;i++){
+      let s = base[i] + synergyOutcome(i);
+      state.scores.outcome[i] = clamp(Math.round(s*10)/10,1,5);
+    }
+    state.scores.totalOutcome = Math.round(state.scores.outcome.reduce((a,b)=>a+b,0));
+  }
+  function scoreMethod(){
+    const steps=['step1','step2','step3','step4'];
+    state.scores.method = steps.map(aiTraceScore);
+    state.scores.totalMethod = state.scores.method.reduce((a,b)=>a+b,0);
+  }
+
+  // -------- Drawing: simple SVG generator for prang top + doorway --------
+  function drawPrang(svgEl, cfg, opts={big:false}){
+    svgEl.innerHTML='';
+    const W = opts.big? 220: 160; const H = opts.big? 320: 240;
+    const NS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(NS,'svg'); svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+    const mats = { stucco:'#dfe7f2', laterite:'#6a3f2b', sandstone:'#caa17a' };
+    const stroke = '#1b2a44';
+
+    // Base
+    const baseColor = '#334155';
+    const base = document.createElementNS(NS,'path');
+    base.setAttribute('d',`M ${W*0.12} ${H*0.96} L ${W*0.88} ${H*0.96} L ${W*0.78} ${H*0.82} L ${W*0.22} ${H*0.82} Z`);
+    base.setAttribute('fill',baseColor); base.setAttribute('stroke',stroke); svg.appendChild(base);
+    const body = document.createElementNS(NS,'rect');
+    body.setAttribute('x',W*0.34); body.setAttribute('y',H*0.40); body.setAttribute('width',W*0.32); body.setAttribute('height',H*0.42);
+    body.setAttribute('fill',baseColor); body.setAttribute('stroke',stroke); svg.appendChild(body);
+
+    // Doorway
+    const doorType = cfg.doorType||'none';
+    const matDoor = mats[cfg.mat||'stucco'];
+    const dx = W*0.5, dw=W*0.18, dh=H*0.18, y0=H*0.64;
+    if(doorType!=='none'){
+      if(doorType==='realPorch'){
+        const open=document.createElementNS(NS,'rect'); open.setAttribute('x',dx-dw/2); open.setAttribute('y',y0-dh); open.setAttribute('width',dw); open.setAttribute('height',dh); open.setAttribute('fill','#0b162d'); open.setAttribute('stroke','#93c5fd'); svg.appendChild(open);
+        const porch=document.createElementNS(NS,'rect'); porch.setAttribute('x',dx-dw*0.6); porch.setAttribute('y',y0); porch.setAttribute('width',dw*1.2); porch.setAttribute('height',H*0.02); porch.setAttribute('fill','#2b3f63'); porch.setAttribute('stroke',stroke); svg.appendChild(porch);
+      } else if(doorType==='falseDoor'){
+        const panel=document.createElementNS(NS,'rect'); panel.setAttribute('x',dx-dw/2); panel.setAttribute('y',y0-dh); panel.setAttribute('width',dw); panel.setAttribute('height',dh); panel.setAttribute('fill',matDoor); panel.setAttribute('stroke',stroke); svg.appendChild(panel);
+      }
+      if(cfg.stairs && cfg.stairs!=='none'){
+        const sTop = y0, steps = 3;
+        for(let i=0;i<steps;i++){
+          const t=document.createElementNS(NS,'rect');
+          const w = dw*1.1 + i*10; const h = 6;
+          const x1= W*0.5 - w/2, y1 = sTop + i*h;
+          t.setAttribute('x',x1); t.setAttribute('y',y1); t.setAttribute('width',w); t.setAttribute('height',h);
+          t.setAttribute('fill','#425c86'); t.setAttribute('stroke',stroke); svg.appendChild(t);
+        }
+        if(cfg.stairs==='naga'){
+          ['left','right'].forEach((side,idx)=>{
+            const x = W*0.5 + (idx? dw*0.7 : -dw*0.7);
+            const path=document.createElementNS(NS,'path');
+            path.setAttribute('d',`M ${x} ${y0} Q ${x+(idx?10:-10)} ${y0+10}, ${x} ${y0+20} Q ${x+(idx?10:-10)} ${y0+30}, ${x} ${y0+40}`);
+            path.setAttribute('stroke','#9fb5e8'); path.setAttribute('fill','none'); path.setAttribute('stroke-width','2'); svg.appendChild(path);
+          });
+        }
+        // Lintel motif
+        const lint=cfg.lintel||'plain';
+        const lx=dx-dw/2, ly=y0-dh-6, lw=dw, lh=6;
+        const bar=document.createElementNS(NS,'rect'); bar.setAttribute('x',lx); bar.setAttribute('y',ly); bar.setAttribute('width',lw); bar.setAttribute('height',lh); bar.setAttribute('fill',matDoor); bar.setAttribute('stroke',stroke); svg.appendChild(bar);
+        if(lint==='lotusBand'){
+          for(let i=0;i<6;i++){ const pet=document.createElementNS(NS,'path'); const px=lx+3+i*(lw/6); pet.setAttribute('d',`M ${px} ${ly+lh} Q ${px+3} ${ly+2}, ${px+6} ${ly+lh}`); pet.setAttribute('stroke','#1b2a44'); pet.setAttribute('fill','none'); svg.appendChild(pet);} }
+        if(lint==='kalaMakara'){
+          const c=document.createElementNS(NS,'circle'); c.setAttribute('cx',dx); c.setAttribute('cy',ly+lh/2); c.setAttribute('r',3); c.setAttribute('fill','#8ab4e6'); c.setAttribute('stroke',stroke); svg.appendChild(c);
+        }
+        if(lint==='garudaBand'){
+          for(let i=0;i<5;i++){ const r=document.createElementNS(NS,'rect'); r.setAttribute('x',lx+2+i*(lw/5)); r.setAttribute('y',ly+1); r.setAttribute('width',4); r.setAttribute('height',lh-2); r.setAttribute('fill','#d6c48a'); r.setAttribute('stroke',stroke); svg.appendChild(r);} }
+      }
+    }
+
+    // Upper tiers
+    const tiers = Number(cfg.tiers||2);
+    const mat = mats[cfg.mat||'stucco'];
+    const motif = cfg.motif||'smooth';
+    const topY = H*0.40;
+    let curW = W*0.32; let curX = W*0.34; let curY = topY;
+    for(let i=0;i<tiers;i++){
+      curW *= 0.8; curX = (W-curW)/2; curY -= H*0.06;
+      const rect = document.createElementNS(NS,'rect');
+      rect.setAttribute('x',curX); rect.setAttribute('y',curY); rect.setAttribute('width',curW); rect.setAttribute('height',H*0.06);
+      rect.setAttribute('fill',mat); rect.setAttribute('stroke',stroke); svg.appendChild(rect);
+      if(motif!=='smooth'){
+        const markCount = 4; const gap = curW/(markCount+1);
+        for(let m=1;m<=markCount;m++){
+          const cx = curX + gap*m; const cy = curY + H*0.03;
+          let el = document.createElementNS(NS,'circle'); let r = 2.2; let fill = '#0b162d';
+          if(motif==='khmerFaces'){ r=2.8; fill='#8ab4e6'; }
+          if(motif==='garuda'){ el = document.createElementNS(NS,'rect'); el.setAttribute('width',4); el.setAttribute('height',4); el.setAttribute('x',cx-2); el.setAttribute('y',cy-2); el.setAttribute('fill','#d6c48a'); el.setAttribute('stroke',stroke); svg.appendChild(el); continue; }
+          if(motif==='hybrid'){ el.setAttribute('r',2.5); fill='#b4c8f3'; }
+          el.setAttribute('cx',cx); el.setAttribute('cy',cy); el.setAttribute('r',r); el.setAttribute('fill',fill); el.setAttribute('stroke',stroke); svg.appendChild(el);
+        }
+      }
+    }
+
+    // Niches
+    if(cfg.niches && cfg.niches!=='none'){
+      const y = H*0.44; const xs = [W*0.35, W*0.50, W*0.65];
+      xs.forEach((x)=>{
+        const arc = document.createElementNS(NS,'path');
+        arc.setAttribute('d',`M ${x-6} ${y} Q ${x} ${y-9.6} ${x+6} ${y} L ${x+6} ${y+6} L ${x-6} ${y+6} Z`);
+        arc.setAttribute('fill', mats[cfg.mat||'stucco']); arc.setAttribute('stroke',stroke); svg.appendChild(arc);
+        if(cfg.niches==='buddha'){
+          const dot=document.createElementNS(NS,'circle'); dot.setAttribute('cx',x); dot.setAttribute('cy',y+3); dot.setAttribute('r',1.6); dot.setAttribute('fill','#b8794a'); svg.appendChild(dot);
+        } else if(cfg.niches==='bodhisattva'){
+          const rh=document.createElementNS(NS,'rect'); rh.setAttribute('x',x-1.8); rh.setAttribute('y',y+2); rh.setAttribute('width',3.6); rh.setAttribute('height',3.6); rh.setAttribute('fill','#8ab4e6'); svg.appendChild(rh);
+        }
+      });
+    }
+
+    // Finial
+    const fin = cfg.finial||'lotus';
+    const hMode = cfg.height||'med';
+    const poleY = H*0.40 - H*0.06*tiers - 6; // top
+    const centerX = W*0.5;
+    let finH = (hMode==='low'? 18: hMode==='high'? 34: 26);
+    if(fin==='lotus'){
+      const el=document.createElementNS(NS,'ellipse'); el.setAttribute('cx',centerX); el.setAttribute('cy',poleY - finH/2); el.setAttribute('rx',finH*0.35); el.setAttribute('ry',finH*0.55); el.setAttribute('fill',mats[cfg.mat||'stucco']); el.setAttribute('stroke',stroke); svg.appendChild(el);
+    } else if(String(fin).startsWith('chatra')){
+      const t = fin==='chatra5'? 5:3; const pole=document.createElementNS(NS,'rect'); pole.setAttribute('x',centerX-1); pole.setAttribute('y',poleY-finH); pole.setAttribute('width',2); pole.setAttribute('height',finH); pole.setAttribute('fill','#c0d6ff'); svg.appendChild(pole);
+      for(let i=0;i<t;i++){
+        const w = 24 - i*4; const y = poleY - finH + 6 + i*6;
+        const disc=document.createElementNS(NS,'rect'); disc.setAttribute('x',centerX-w/2); disc.setAttribute('y',y); disc.setAttribute('width',w); disc.setAttribute('height',4); disc.setAttribute('rx',2); disc.setAttribute('fill','#c0d6ff'); disc.setAttribute('stroke',stroke); svg.appendChild(disc);
+      }
+    } else if(fin==='flame'){
+      const p=document.createElementNS(NS,'path'); const w=18; const y0=poleY-finH; p.setAttribute('d',`M ${centerX} ${y0} C ${centerX+w/2} ${y0+finH*0.35}, ${centerX+w/2} ${poleY-4}, ${centerX} ${poleY-2} C ${centerX-w/2} ${poleY-4}, ${centerX-w/2} ${y0+finH*0.35}, ${centerX} ${y0} Z`); p.setAttribute('fill',mats[cfg.mat||'stucco']); p.setAttribute('stroke',stroke); svg.appendChild(p);
+    }
+
+    svgEl.appendChild(svg);
+  }
+
+  // -------- Rendering flow --------
+  function refreshAll(){
+    drawPrang($('#baseViz'), {tiers:2, mat:'sandstone', finial:'lotus'}, {big:true});
+    drawPrang($('#s1_viz'), {...state.s1, mat:'sandstone', motif:'smooth', niches:'none', height:'med', doorType:'none' });
+    drawPrang($('#s2_viz'), {...state.s1, ...state.s2, niches:'none', height:'med', doorType:'none' });
+    drawPrang($('#s3_viz'), {...state.s1, ...state.s2, ...state.s3, doorType:'none' });
+    drawPrang($('#s4_viz'), {...state.s1, ...state.s2, ...state.s3, ...state.s4});
+  }
+
+  function gatherAiTrace(){
+    state.ai.step0={
+      prompt: $('#ai0_prompt').value.trim(),
+      answer: $('#ai0_answer').value.trim(),
+      ref: $('#ai0_ref').value.trim()
+    };
+    state.ai.step1={ prompt: $('#ai1_prompt').value.trim(), answer: $('#ai1_answer').value.trim(), ref: $('#ai1_ref').value.trim() };
+    state.ai.step2={ prompt: $('#ai2_prompt').value.trim(), answer: $('#ai2_answer').value.trim(), ref: $('#ai2_ref').value.trim() };
+    state.ai.step3={ prompt: $('#ai3_prompt').value.trim(), answer: $('#ai3_answer').value.trim(), ref: $('#ai3_ref').value.trim() };
+    state.ai.step4={ prompt: $('#ai4_prompt').value.trim(), answer: $('#ai4_answer').value.trim(), ref: $('#ai4_ref').value.trim() };
+    state.ai.meta={ learn: $('#ai_all_learn').value.trim(), crit: $('#ai_all_crit').value.trim() };
+  }
+
+  function finalize(){
+    drawPrang($('#finalViz'), {...state.s1, ...state.s2, ...state.s3, ...state.s4}, {big:true});
+
+    // compute scores
+    gatherAiTrace();
+    scoreOutcome();
+    scoreMethod();
+    renderScoreChart();
+
+    // audit text
+    const audit = [
+      `ขั้น 1: theme=${state.s1.theme}, finial=${state.s1.finial}, tiers=${state.s1.tiers}`,
+      `เหตุผล: ${state.s1.reason||'-'}`,
+      `ขั้น 2: mat=${state.s2.mat}, motif=${state.s2.motif}`,
+      `เหตุผล: ${state.s2.reason||'-'}`,
+      `ขั้น 3: height=${state.s3.height}, niches=${state.s3.niches}`,
+      `เหตุผล: ${state.s3.reason||'-'}`,
+      `ขั้น 4: door=${state.s4.doorType}, lintel=${state.s4.lintel}, stairs=${state.s4.stairs}`,
+      `เหตุผล: ${state.s4.reason||'-'}`,
+      '',
+      `คะแนน Outcome ต่อขั้น: ${state.scores.outcome.join(' / ')} (รวม ${state.scores.totalOutcome})`,
+      `คะแนน Method ต่อขั้น: ${state.scores.method.join(' / ')} (รวม ${state.scores.totalMethod})`
+    ].join('\n');
+    $('#audit').textContent = audit;
+
+    // copyable concept prompt
+    const prompt = `As a 17th-century Ayutthaya architect revising Bayon-style prang (Phra Prang Sam Yot), write a short Thai concept for this final design. Constraints: keep base shape; focus on upper tiers and finial; theme=${state.s1.theme}; finial=${state.s1.finial}; tiers=${state.s1.tiers}; material=${state.s2.mat}; motif=${state.s2.motif}; height=${state.s3.height}; niches=${state.s3.niches}; doorway=${state.s4.doorType}; lintel=${state.s4.lintel}; stairs=${state.s4.stairs}. Emphasize religious + cultural symbolism in King Narai era.`;
+    $('#btnCopyPrompt').onclick = ()=> copyText(prompt);
+
+    // update radial summary if panel is visible
+    if(!$('#summaryPanel').style.display || $('#summaryPanel').style.display!=="none"){ renderRadialSummary(); }
+  }
+
+  function copyText(t){ navigator.clipboard.writeText(t).then(()=>{ alert('คัดลอกข้อความแล้ว'); }).catch(()=>{}); }
+
+  // -------- Randomizers --------
+  function rand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  function randomizeS1(){ state.s1.theme = rand(['devotion','hybrid','royal']); state.s1.finial = rand(['lotus','chatra3','chatra5','flame']); state.s1.tiers = rand([1,2,3]); $('#s1_theme').value=state.s1.theme; $('#s1_finial').value=state.s1.finial; $('#s1_tiers').value=String(state.s1.tiers); $('#s1_reason').value=''; refreshAll(); }
+  function randomizeS2(){ state.s2.mat = rand(['stucco','laterite','sandstone']); state.s2.motif = rand(['smooth','khmerFaces','garuda','hybrid']); $('#s2_mat').value=state.s2.mat; $('#s2_motif').value=state.s2.motif; $('#s2_reason').value=''; refreshAll(); }
+  function randomizeS3(){ state.s3.height = rand(['low','med','high']); state.s3.niches = rand(['none','buddha','bodhisattva']); $('#s3_height').value=state.s3.height; $('#s3_niches').value=state.s3.niches; $('#s3_reason').value=''; refreshAll(); }
+  function randomizeS4(){ state.s4.doorType = rand(['none','falseDoor','realPorch']); state.s4.lintel = rand(['plain','lotusBand','kalaMakara','garudaBand']); state.s4.stairs = rand(['none','straight','naga']); $('#s4_doorType').value=state.s4.doorType; $('#s4_lintel').value=state.s4.lintel; $('#s4_stairs').value=state.s4.stairs; $('#s4_reason').value=''; refreshAll(); }
+
+  // -------- Export helpers --------
+  function svgToPng(svgContainer, filename='prang-design.png'){
+    const svg = svgContainer.querySelector('svg'); if(!svg){ alert('ยังไม่มีภาพที่จะบันทึก'); return; }
+    const xml = new XMLSerializer().serializeToString(svg);
+    const img = new Image();
+    const w = svg.viewBox.baseVal.width || svg.clientWidth || 360;
+    const h = svg.viewBox.baseVal.height || svg.clientHeight || 480;
+    const canvas = document.createElement('canvas'); canvas.width=w*3; canvas.height=h*3; // sharper
+    const ctx = canvas.getContext('2d');
+    img.onload = ()=>{ ctx.fillStyle='#0b122a'; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.drawImage(img,0,0,canvas.width,canvas.height); const a=document.createElement('a'); a.download=filename; a.href=canvas.toDataURL('image/png'); a.click(); };
+    img.src = 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(xml);
+  }
+
+  // -------- Score chart (SVG line) --------
+  function renderScoreChart(){
+    const svg = document.getElementById('scoreChart'); if(!svg) return; svg.innerHTML='';
+    const NS = 'http://www.w3.org/2000/svg';
+    const W=780,H=220, pad=50; const steps=4; const xStep=(W-2*pad)/(steps-1);
+    const scaleY=v=> H-pad - ( (v-1)/(5-1) )*(H-2*pad );
+    const scaleX=i=> pad + i*xStep;
+    const ax = (d,stroke='#6b89c8')=>{ const el=document.createElementNS(NS,'path'); el.setAttribute('d',d); el.setAttribute('stroke',stroke); el.setAttribute('fill','none'); el.setAttribute('stroke-width','1'); svg.appendChild(el); };
+    const makeText=(str,x,y)=>{ const t=document.createElementNS(NS,'text'); t.setAttribute('x',x); t.setAttribute('y',y); t.setAttribute('font-size','12'); t.setAttribute('fill','#9fb5e8'); t.textContent=str; svg.appendChild(t); return t; };
+
+    ax(`M ${pad} ${H-pad} L ${W-pad} ${H-pad}`); ax(`M ${pad} ${pad} L ${pad} ${H-pad}`);
+    for(let i=1;i<=5;i++){ const y=scaleY(i); ax(`M ${pad-6} ${y} L ${W-pad} ${y}`, i===1||i===5?'#2b3f63':'#16325c'); makeText(`${i}`, pad-24, y+4); }
+    for(let i=0;i<steps;i++){ const x=scaleX(i); ax(`M ${x} ${H-pad} L ${x} ${H-pad+6}`,'#6b89c8'); makeText(`ขั้น ${i+1}`, x-18, H-pad+20); }
+
+    const pathStr=(arr)=> arr.map((v,i)=> `${i?'L':'M'} ${scaleX(i)} ${scaleY(v)}`).join(' ');
+    const mkPath=(d,col)=>{ const p=document.createElementNS(NS,'path'); p.setAttribute('d',d); p.setAttribute('fill','none'); p.setAttribute('stroke',col); p.setAttribute('stroke-width','2.5'); p.setAttribute('stroke-linejoin','round'); p.setAttribute('stroke-linecap','round'); svg.appendChild(p); };
+    const dot=(x,y,col)=>{ const c=document.createElementNS(NS,'circle'); c.setAttribute('cx',x); c.setAttribute('cy',y); c.setAttribute('r',4); c.setAttribute('fill',col); c.setAttribute('stroke','#0b162d'); svg.appendChild(c);} 
+
+    const oc = state.scores.outcome, mc = state.scores.method;
+    mkPath(pathStr(oc),'#60a5fa'); mkPath(pathStr(mc),'#22c55e');
+    oc.forEach((v,i)=> dot(scaleX(i), scaleY(v),'#60a5fa')); mc.forEach((v,i)=> dot(scaleX(i), scaleY(v),'#22c55e'));
+
+    // Legend
+    const lgX=W-220, topY=pad+10;
+    const rect=(x,y,color)=>{ const r=document.createElementNS(NS,'rect'); r.setAttribute('x',x); r.setAttribute('y',y-8); r.setAttribute('width',14); r.setAttribute('height',4); r.setAttribute('fill',color); svg.appendChild(r); };
+    rect(lgX, topY, '#60a5fa'); makeText('Outcome (ออกแบบ)', lgX+20, topY-2);
+    rect(lgX, topY+20, '#22c55e'); makeText('Method (AI Trace)', lgX+20, topY+18);
+
+    document.getElementById('scoreText').innerHTML = `รวม Outcome = <b>${state.scores.totalOutcome}</b> / 20 &nbsp; • &nbsp; รวม Method = <b>${state.scores.totalMethod}</b> / 20`;
+  }
+
+  // -------- Radial summary (simple radar for 4 steps, two series) --------
+  function renderRadialSummary(){
+    const svg = document.getElementById('radialSummary'); if(!svg) return; svg.innerHTML='';
+    const NS='http://www.w3.org/2000/svg';
+    const cx=160, cy=120, R=90; const steps=4;
+    const scale=r=> (r/5)*R;
+    const angle=i=> (-Math.PI/2) + (2*Math.PI*i/steps);
+    const pt=(i,val)=> [cx + Math.cos(angle(i))*scale(val), cy + Math.sin(angle(i))*scale(val)];
+
+    // grid
+    for(let ring=1; ring<=4; ring++){
+      const r=(ring/4)*R; const circ=document.createElementNS(NS,'circle'); circ.setAttribute('cx',cx); circ.setAttribute('cy',cy); circ.setAttribute('r',r); circ.setAttribute('fill','none'); circ.setAttribute('stroke','#1f365d'); svg.appendChild(circ);
+    }
+    for(let i=0;i<steps;i++){
+      const a=angle(i); const x=cx+Math.cos(a)*R; const y=cy+Math.sin(a)*R; const ln=document.createElementNS(NS,'line'); ln.setAttribute('x1',cx); ln.setAttribute('y1',cy); ln.setAttribute('x2',x); ln.setAttribute('y2',y); ln.setAttribute('stroke','#1f365d'); svg.appendChild(ln);
+      const label=document.createElementNS(NS,'text'); label.setAttribute('x',cx+Math.cos(a)*(R+12)); label.setAttribute('y',cy+Math.sin(a)*(R+12)); label.setAttribute('font-size','12'); label.setAttribute('fill','#9fb5e8'); label.textContent='ขั้น '+(i+1); svg.appendChild(label);
+    }
+
+    const poly=(vals,color,fillOpacity=0.18)=>{
+      const d = vals.map((v,i)=>`${i?'L':'M'} ${pt(i,v).join(' ')}`).join(' ') + ' Z';
+      const p=document.createElementNS(NS,'path'); p.setAttribute('d',d); p.setAttribute('fill',color); p.setAttribute('stroke',color); p.setAttribute('opacity',fillOpacity); p.setAttribute('stroke-width','2'); svg.appendChild(p);
+    };
+
+    poly(state.scores.outcome, '#60a5fa', 0.2);
+    poly(state.scores.method, '#22c55e', 0.2);
+
+    $('#summaryText').innerHTML = `Outcome รายขั้น: <b>${state.scores.outcome.join(' / ')}</b><br>Method รายขั้น: <b>${state.scores.method.join(' / ')}</b>`;
+  }
+
+  // -------- JSON export --------
+  function exportJSON(){
+    gatherAiTrace(); scoreOutcome(); scoreMethod();
+    const payload = { state, finalText: $('#finalText').value.trim(), ts: new Date().toISOString() };
+    const blob = new Blob([JSON.stringify(payload,null,2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='prang-design.json'; a.click(); URL.revokeObjectURL(url);
+  }
+
+  // -------- CSV export (flat) --------
+  function exportCSV(){
+    gatherAiTrace(); scoreOutcome(); scoreMethod();
+    const H = [
+      'Timestamp','Name','StudentId',
+      'S1_Theme','S1_Finial','S1_Tiers','S1_Reason',
+      'S2_Material','S2_Motif','S2_Reason',
+      'S3_Height','S3_Niches','S3_Reason',
+      'S4_Door','S4_Lintel','S4_Stairs','S4_Reason',
+      'Outcome_1','Outcome_2','Outcome_3','Outcome_4','Outcome_Total',
+      'Method_1','Method_2','Method_3','Method_4','Method_Total',
+      'Final_Text'
+    ];
+    const now = new Date().toISOString();
+    const row = [
+      now, state.user.name, state.user.sid,
+      state.s1.theme, state.s1.finial, state.s1.tiers, clean(state.s1.reason),
+      state.s2.mat, state.s2.motif, clean(state.s2.reason),
+      state.s3.height, state.s3.niches, clean(state.s3.reason),
+      state.s4.doorType, state.s4.lintel, state.s4.stairs, clean(state.s4.reason),
+      ...state.scores.outcome, state.scores.totalOutcome,
+      ...state.scores.method, state.scores.totalMethod,
+      clean($('#finalText').value)
+    ];
+    const csv = [H.join(','), row.map(csvCell).join(',')].join('\n');
+    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='prang-design.csv'; a.click(); URL.revokeObjectURL(url);
+  }
+  const csvCell = v => '"'+String(v??'').replaceAll('"','""')+'"';
+  const clean = s => String(s||'').replaceAll('\n',' ').trim();
+
+  // -------- Submit to Apps Script --------
+  async function submitToSheet(){
+    if(!WEB_APP_URL){ alert('ยังไม่ได้ตั้งค่า WEB_APP_URL'); return; }
+    gatherAiTrace(); scoreOutcome(); scoreMethod();
+    const payload = { state, finalText: $('#finalText').value.trim(), ts: new Date().toISOString(), action:'submit' };
+    setStatus('กำลังส่ง...', 'warn');
+    try{
+      const res = await fetch(WEB_APP_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+      const data = await res.json().catch(()=>({ok:false}));
+      if(res.ok){ setStatus('บันทึกแล้ว ✔', 'okay'); } else { setStatus('ส่งไม่สำเร็จ', 'warn'); alert('ส่งไม่สำเร็จ: '+(data.message||res.status)); }
+    }catch(err){ setStatus('ผิดพลาด', 'warn'); alert('Error: '+err.message); }
+  }
+  function setStatus(msg,type){ const pill=$('#pillStatus'); pill.textContent=msg; pill.style.borderColor = type==='okay'? '#22c55e' : '#f59e0b'; pill.style.color = type==='okay'? '#b7f7c6' : '#ffe7b8'; }
+
+  // -------- User local storage --------
+  function loadUser(){ try{ const u=JSON.parse(localStorage.getItem('pt_user')||'{}'); if(u.name) state.user.name=u.name; if(u.sid) state.user.sid=u.sid; }catch{} }
+  function saveUser(){ localStorage.setItem('pt_user', JSON.stringify(state.user)); }
+  function fillUserInputs(){ $('#user_name').value = state.user.name||''; $('#user_sid').value = state.user.sid||''; }
+
+  // -------- Boot & events --------
+  function boot(){
+    ensureEls();
+    loadUser();
+    drawPrang($('#baseViz'), {tiers:2, mat:'sandstone', finial:'lotus'}, {big:true});
+    refreshAll();
+
+    // Copy helper prompt for Step 0
+    $('#copyPrompt0').onclick = ()=> copyText('Bayon vs Ayutthaya prang finial design features, Narai-era symbolism, lintel motifs (kala-makara vs garuda), doorway types (false door vs real porch)');
+
+    // Step1
+    $('#s1_theme').onchange = e=> state.s1.theme = e.target.value;
+    $('#s1_finial').onchange = e=> state.s1.finial = e.target.value;
+    $('#s1_tiers').onchange  = e=> state.s1.tiers  = Number(e.target.value);
+    $('#s1_reason').oninput = e=> state.s1.reason = e.target.value;
+    $('#s1_apply').onclick = ()=>{ refreshAll(); document.querySelector('#s2_viz').scrollIntoView({behavior:'smooth',block:'center'}); };
+    $('#s1_rand').onclick  = ()=> randomizeS1();
+
+    // Step2
+    $('#s2_mat').onchange = e=> state.s2.mat = e.target.value;
+    $('#s2_motif').onchange = e=> state.s2.motif = e.target.value;
+    $('#s2_reason').oninput = e=> state.s2.reason = e.target.value;
+    $('#s2_apply').onclick = ()=>{ refreshAll(); document.querySelector('#s3_viz').scrollIntoView({behavior:'smooth',block:'center'}); };
+    $('#s2_rand').onclick  = ()=> randomizeS2();
+
+    // Step3
+    $('#s3_height').onchange = e=> state.s3.height = e.target.value;
+    $('#s3_niches').onchange = e=> state.s3.niches = e.target.value;
+    $('#s3_reason').oninput = e=> state.s3.reason = e.target.value;
+    $('#s3_apply').onclick = ()=>{ refreshAll(); document.querySelector('#s4_viz').scrollIntoView({behavior:'smooth',block:'center'}); };
+    $('#s3_rand').onclick  = ()=> randomizeS3();
+
+    // Step4
+    $('#s4_doorType').onchange = e=> state.s4.doorType = e.target.value;
+    $('#s4_lintel').onchange = e=> state.s4.lintel = e.target.value;
+    $('#s4_stairs').onchange = e=> state.s4.stairs = e.target.value;
+    $('#s4_reason').oninput = e=> state.s4.reason = e.target.value;
+    $('#s4_apply').onclick = ()=>{ finalize(); document.querySelector('#finalViz').scrollIntoView({behavior:'smooth',block:'center'}); };
+    $('#s4_rand').onclick  = ()=> randomizeS4();
+
+    // Buttons (header & final)
+    $('#btnDownload').onclick = ()=> svgToPng($('#finalViz'));
+    $('#btnJSON').onclick = exportJSON;
+    $('#btnCSV').onclick = exportCSV;
+    $('#btnSubmit').onclick = submitToSheet;
+    $('#btnSummary').onclick = ()=>{ $('#summaryPanel').style.display = ($('#summaryPanel').style.display==='none' || !$('#summaryPanel').style.display) ? 'block':'none'; if($('#summaryPanel').style.display==='block'){ gatherAiTrace(); scoreOutcome(); scoreMethod(); renderRadialSummary(); } };
+
+    // User panel
+    $('#btnUser').onclick = ()=>{ fillUserInputs(); $('#userPanel').style.display='block'; };
+    $('#btnCloseUser').onclick = ()=> $('#userPanel').style.display='none';
+    $('#btnSaveUser').onclick = ()=>{ state.user.name=$('#user_name').value.trim(); state.user.sid=$('#user_sid').value.trim(); saveUser(); $('#userPanel').style.display='none'; setStatus('บันทึกผู้ใช้แล้ว', 'okay'); };
+  }
+
+  // Kickstart
+  window.addEventListener('DOMContentLoaded', boot);
+  </script>
+</body>
+</html>
