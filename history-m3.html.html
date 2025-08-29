@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>แบบทดสอบกลางภาค ประวัติศาสตร์ ม.3 – ส 4.3 (K·P·A + Self) – Interactive</title>
+<style>
+  :root{
+    --bg:#0b122a;--panel:#0f1c3a;--card:#16243f;--ink:#e6f1ff;--muted:#bcd3ff;--accent:#38bdf8;--accent2:#60a5fa;--ok:#22c55e;--warn:#f59e0b;--bad:#ef4444;--bd:#274064;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:16px/1.55 system-ui,Inter,"Noto Sans Thai",sans-serif;background:radial-gradient(1200px 800px at 20% -10%,#122048,transparent),linear-gradient(#0b122a,#091024);color:var(--ink)}
+  header{position:sticky;top:0;background:rgba(10,18,40,.9);backdrop-filter:blur(8px);border-bottom:1px solid #1c2f54;z-index:30}
+  header .wrap{max-width:1100px;margin:auto;display:flex;gap:16px;align-items:center;padding:12px 16px}
+  h1{font-size:20px;margin:0}
+  main{max-width:1100px;margin:24px auto;padding:0 16px 64px}
+  .panel{background:var(--panel);border:1px solid #1f335b;border-radius:16px;padding:16px;margin:16px 0}
+  .grid{display:grid;gap:12px}
+  .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  label{display:block;font-weight:600;margin-bottom:6px}
+  input[type=text], input[type=number], textarea, select{width:100%;padding:10px 12px;background:#0e1a35;color:var(--ink);border:1px solid #2b4572;border-radius:10px}
+  textarea{min-height:120px}
+  .card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;margin:16px 0}
+  .card h3{margin:0 0 8px}
+  .muted{color:var(--muted)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;background:linear-gradient(180deg,var(--accent),var(--accent2));color:#04223a;border:0;font-weight:700;cursor:pointer}
+  .btn.secondary{background:#18325e;color:var(--ink);border:1px solid #2a4b86}
+  .btn.warn{background:#3a2a04;color:#fff;border:1px solid #a47711}
+  .btn:disabled{opacity:.6;cursor:not-allowed}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border:1px solid #2a426d;border-radius:999px;background:#0f1e3f;font-size:12px}
+  .badge{display:inline-block;padding:2px 8px;border-radius:999px;background:#152a51;border:1px solid #27457f;font-size:12px;color:#bcd3ff}
+  .qwrap{margin:8px 0 16px}
+  .opt{display:flex;gap:10px;align-items:flex-start;margin:8px 0;padding:10px;border:1px solid #1f335a;border-radius:12px;background:#0d1b37}
+  .opt input{margin-top:4px}
+  .dropzone{min-height:44px;padding:8px;border:1px dashed #365285;border-radius:12px;background:#0a1a36}
+  .token{display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border-radius:999px;background:#14305a;border:1px solid #2b4a7f;margin:4px;cursor:grab}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .pair-row{display:grid;grid-template-columns:1fr 24px 1fr;align-items:center;gap:8px;margin:6px 0}
+  .progress{height:8px;background:#0f2245;border-radius:999px;overflow:hidden;border:1px solid #1d3563}
+  .bar{height:100%;width:0;background:linear-gradient(90deg,#31b2f3,#6aa7ff)}
+  details{background:#0d1c3a;border:1px solid #203a6b;border-radius:12px;padding:10px 12px}
+  details[open]{background:#0e2148}
+  .small{font-size:13px}
+  .center{display:flex;justify-content:center;align-items:center}
+  .k{color:#94f}
+  .p{color:#6df}
+  .a{color:#9f6}
+  .err{color:var(--bad)}
+  .ok{color:var(--ok)}
+  .warn{color:var(--warn)}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>แบบทดสอบกลางภาค ประวัติศาสตร์ ม.3 — ส 4.3 (K·P·A + Self)</h1>
+    <div class="pill"><span>ออฟไลน์/บันทึกอัตโนมัติ</span></div>
+  </div>
+</header>
+<main>
+  <section class="panel">
+    <details>
+      <summary><strong>Blueprint (ย่อ) & วิธีใช้ไฟล์</strong> — คลิกเพื่อเปิดดู</summary>
+      <div class="grid g2" style="margin-top:10px">
+        <div>
+          <h3>กรอบสัดส่วนคะแนนรวม = 100</h3>
+          <ul>
+            <li><b class="k">K</b> = 30 คะแนน (ความรู้เนื้อหา/แนวคิด)</li>
+            <li><b class="p">P</b> = 38 คะแนน (กระบวนการประวัติศาสตร์/หลักฐาน)</li>
+            <li><b class="a">A</b> = 32 คะแนน (การประยุกต์/เจตคติพลเมือง)</li>
+            <li><b>Self</b> = ไม่คิดคะแนน (บันทึกเพื่อวิเคราะห์ Gap)</li>
+          </ul>
+          <p class="small muted">หลักการช่างกังขา: ก่อนคะแนนเต็ม ให้ถามตนเองว่า “ถ้าตัดหลักฐานชิ้นสำคัญออก ข้อสรุปยังยืนอยู่หรือไม่?”</p>
+        </div>
+        <div>
+          <h3>วิธีใช้</h3>
+          <ol class="small">
+            <li>กรอกข้อมูลผู้สอบ → ทำข้อสอบแต่ละส่วน (บันทึกอัตโนมัติในเบราว์เซอร์)</li>
+            <li>กด <b>คำนวณคะแนน</b> เพื่อดูสรุป K/P/A</li>
+            <li>กด <b>ส่งออก CSV</b> เพื่อนำไฟล์ไปส่งครู/อัปโหลด</li>
+          </ol>
+        </div>
+      </div>
+      <h3>โครงสร้างข้อสอบ (30 ข้อ)</h3>
+      <ul class="small">
+        <li><b class="k">K-only</b> 15 ข้อ (ปรนัย + เติมคำสั้น ๆ)</li>
+        <li><b class="p">P-only</b> 8 ข้อ (ปรนัย/เติมคำ + จับคู่ 2 ข้อ + จัดหมวดความสัมพันธ์ 2 ข้อ)</li>
+        <li><b class="a">A-only</b> 7 ข้อ (สถานการณ์เชิงซ้อน/หลายคำตอบ/ให้เหตุผล)</li>
+      </ul>
+    </details>
+  </section>
+
+  <section class="panel">
+    <h2 style="margin:0 0 8px">ข้อมูลผู้สอบ</h2>
+    <div class="grid g3">
+      <div><label>ชื่อ–สกุล</label><input id="name" type="text" placeholder="เช่น เด็กชาย…"/></div>
+      <div><label>รหัสนักเรียน/เลขที่</label><input id="sid" type="text" placeholder="เช่น ม3/1–15"/></div>
+      <div><label>ห้อง</label><input id="room" type="text" placeholder="เช่น ม3/1"/></div>
+    </div>
+    <div class="progress" aria-label="progress"><div id="progbar" class="bar"></div></div>
+    <p class="small muted">ระบบบันทึกอัตโนมัติ (LocalStorage) • ใช้งานออฟไลน์ได้ • เบราว์เซอร์: Chrome/Edge/Firefox</p>
+  </section>
+
+  <div id="quiz"></div>
+
+  <section class="panel" id="selfPanel">
+    <h2 style="margin:0 0 8px">Self-Assessment & Reflection (ไม่คิดคะแนน)</h2>
+    <div class="grid g3">
+      <div>
+        <label>ฉันเข้าใจเนื้อหา (K)</label>
+        <select id="selfK">
+          <option value="">เลือก…</option>
+          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+        </select>
+      </div>
+      <div>
+        <label>ฉันใช้หลักฐานได้ (P)</label>
+        <select id="selfP">
+          <option value="">เลือก…</option>
+          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+        </select>
+      </div>
+      <div>
+        <label>ฉันประยุกต์อธิบายสังคมปัจจุบัน (A)</label>
+        <select id="selfA">
+          <option value="">เลือก…</option>
+          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+        </select>
+      </div>
+    </div>
+    <label>Reflection (อย่างน้อย 2–3 ประโยค): จุดที่มั่นใจ/จุดที่ยังสับสน/หลักฐานที่อยากหาเพิ่ม</label>
+    <textarea id="reflection" placeholder="เขียนสะท้อนคิดสั้น ๆ"></textarea>
+  </section>
+
+  <section class="panel">
+    <h2 style="margin:0 0 8px">สรุปผล</h2>
+    <div class="grid g3">
+      <div class="card"><b class="k">K</b>: <span id="sumK">0</span> / 30</div>
+      <div class="card"><b class="p">P</b>: <span id="sumP">0</span> / 38</div>
+      <div class="card"><b class="a">A</b>: <span id="sumA">0</span> / 32</div>
+    </div>
+    <div class="card">รวมคะแนนทั้งหมด: <b id="sumTotal">0 / 100</b></div>
+    <div class="toolbar">
+      <button class="btn" id="calcBtn">คำนวณคะแนน</button>
+      <button class="btn secondary" id="exportCsvBtn" disabled>ส่งออก CSV</button>
+      <button class="btn secondary" id="exportJsonBtn" disabled>ส่งออก JSON</button>
+      <button class="btn warn" id="resetBtn">ล้างคำตอบ (รีเซ็ต)</button>
+    </div>
+    <p class="small muted">ปล. ส่งออกได้หลังคำนวณคะแนน • ไฟล์จะบันทึกลงเครื่องของผู้สอบโดยอัตโนมัติ</p>
+  </section>
+</main>
+
+<script>
+// ========== Utility ==========
+const $ = (sel, root=document) => root.querySelector(sel);
+const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+const byId = id => document.getElementById(id);
+
+function shuffle(arr){
+  return arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(v=>v[1]);
+}
+
+function download(filename, text){
+  const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function escapeCsv(val){
+  let s = String(val ?? '').replace(/\r?\n/g,' ').trim();
+  if (s.includes(',') || s.includes('"')) s = '"' + s.replace(/"/g,'""') + '"';
+  return s;
+}
+
+// ========== QUIZ DATA ==========
+// 30 items total. Dimensions: K(30), P(38), A(32)
+// Types: mcq, ms (multi-select), short, match, categorize
+const QUIZ = {
+  meta:{
+    title:"แบบทดสอบกลางภาค ส 4.3 – K·P·A + Self",
+    version:"1.0.0",
+    weights:{K:30,P:38,A:32},
+    note:"คะแนน Self ไม่คิดรวม แต่บันทึกเพื่อวิเคราะห์ Gap"
+  },
+  items:[
+    // --- K (15 items, total 30 pts: 2 pts each) ---
+    {id:'Q1', dim:'K', points:2, type:'mcq', prompt:'กรุงรัตนโกสินทร์สถาปนาเป็นราชธานีในปีใด?', options:[
+      {t:'พ.ศ. 2310', ok:false},{t:'พ.ศ. 2325', ok:true},{t:'พ.ศ. 2357', ok:false},{t:'พ.ศ. 2475', ok:false}
+    ]},
+    {id:'Q2', dim:'K', points:2, type:'mcq', prompt:'ข้อใด <u>ไม่ใช่</u>ปัจจัยภายนอกสำคัญที่ผลักดันให้ไทยต้องปฏิรูปในสมัยรัตนโกสินทร์ตอนต้น–กลาง', options:[
+      {t:'การขยายตัวของจักรวรรดินิยมตะวันตก', ok:false},
+      {t:'การค้าโลกและสนธิสัญญาเบาว์ริง', ok:false},
+      {t:'การรวมชาติของอิตาลีและเยอรมนี', ok:false},
+      {t:'การตั้งกรุงศรีอยุธยาเป็นราชธานี', ok:true}
+    ]},
+    {id:'Q3', dim:'K', points:2, type:'mcq', prompt:'สนธิสัญญาเบาว์ริง (พ.ศ. 2398) มีผลกระทบหลักข้อใดมากที่สุด', options:[
+      {t:'การเลิกทาสทันที', ok:false},
+      {t:'การเปิดการค้าเสรีและปรับโครงสร้างเศรษฐกิจ', ok:true},
+      {t:'การเปลี่ยนแปลงการปกครองเป็นประชาธิปไตย', ok:false},
+      {t:'การประกาศใช้รัฐธรรมนูญ', ok:false}
+    ]},
+    {id:'Q4', dim:'K', points:2, type:'mcq', prompt:'การเปลี่ยนแปลงการปกครอง พ.ศ. 2475 ส่งผลโดยตรงข้อใด', options:[
+      {t:'ไทยเข้าเป็นสมาชิกสหประชาชาติ', ok:false},
+      {t:'เกิดระบอบสมบูรณาญาสิทธิราชย์', ok:false},
+      {t:'เกิดระบอบประชาธิปไตยภายใต้รัฐธรรมนูญ', ok:true},
+      {t:'ยกเลิกระบบศักดินา', ok:false}
+    ]},
+    {id:'Q5', dim:'K', points:2, type:'mcq', prompt:'ข้อใดจัดเป็น “ภูมิปัญญาไทย” ด้านงานช่างอย่างเด่นชัด', options:[
+      {t:'โขน', ok:false}, {t:'สถาปัตยกรรมพระราชวังดุสิต', ok:true}, {t:'รำวง', ok:false}, {t:'เพลงลูกทุ่งยุคแรก', ok:false}
+    ]},
+    {id:'Q6', dim:'K', points:2, type:'mcq', prompt:'พระราชบัญญัติเลิกทาสในสมัยรัตนโกสินทร์เกี่ยวข้องกับรัชกาลใดเป็นหลัก', options:[
+      {t:'รัชกาลที่ 3', ok:false},{t:'รัชกาลที่ 4', ok:false},{t:'รัชกาลที่ 5', ok:true},{t:'รัชกาลที่ 6', ok:false}
+    ]},
+    {id:'Q7', dim:'K', points:2, type:'mcq', prompt:'ข้อใดคือ “ความต่อเนื่อง” มากกว่า “การเปลี่ยนแปลง”', options:[
+      {t:'การเข้าสู่ระบบเลือกตั้งหลัง 2475', ok:false},
+      {t:'บทบาทสถาบันทางศาสนาในสังคมไทย', ok:true},
+      {t:'การเปิดประเทศสู่เศรษฐกิจโลก', ok:false},
+      {t:'การขยายตัวของเมืองสมัยใหม่', ok:false}
+    ]},
+    {id:'Q8', dim:'K', points:2, type:'mcq', prompt:'ข้อใดคือบทบาทของไทยในเวทีระหว่างประเทศ “ยุคประชาธิปไตยสมัยใหม่”', options:[
+      {t:'เข้าร่วมสงครามโลกครั้งที่ 1 ฝ่ายสัมพันธมิตร', ok:false},
+      {t:'เป็นสมาชิกก่อตั้งอาเซียน', ok:true},
+      {t:'ทำสนธิสัญญาเบาว์ริง', ok:false},
+      {t:'สงครามเจ้าอนุวงศ์', ok:false}
+    ]},
+    {id:'Q9', dim:'K', points:2, type:'short', prompt:'เติมคำ: การขยายตัวของเมืองสมัยใหม่สัมพันธ์กับระบบคมนาคมและ __________ ที่เติบโตอย่างรวดเร็ว', answers:['การศึกษา','การศึกษาไทย','ระบบการศึกษา']},
+    {id:'Q10', dim:'K', points:2, type:'short', prompt:'เติมคำ: แนวคิด “ประดิษฐกรรมจารีต (Invented Tradition)” หมายถึงจารีตที่ถูก _________ ในยุคสมัยใหม่แล้วอ้างว่าโบราณ', answers:['สร้างขึ้น','ประดิษฐ์ขึ้น','กำหนดขึ้น']},
+    {id:'Q11', dim:'K', points:2, type:'mcq', prompt:'งานสถาปัตยกรรมแบบผสมตะวันตก–ไทยเห็นชัดในสมัยใด', options:[
+      {t:'รัชกาลที่ 1', ok:false},{t:'รัชกาลที่ 2', ok:false},{t:'รัชกาลที่ 5', ok:true},{t:'รัชกาลที่ 7', ok:false}
+    ]},
+    {id:'Q12', dim:'K', points:2, type:'mcq', prompt:'รัฐธรรมนูญแรกของไทยประกาศใช้ในปีใด', options:[
+      {t:'พ.ศ. 2457', ok:false},{t:'พ.ศ. 2475', ok:true},{t:'พ.ศ. 2488', ok:false},{t:'พ.ศ. 2500', ok:false}
+    ]},
+    {id:'Q13', dim:'K', points:2, type:'short', prompt:'เติมคำ: “ปัจจัยภายนอก” ที่ทำให้ไทยปฏิรูป เช่น อิทธิพลของ _________', answers:['จักรวรรดินิยม','ตะวันตก','ชาติตะวันตก']},
+    {id:'Q14', dim:'K', points:2, type:'mcq', prompt:'ข้อใดเป็น “ผลกระทบทางเศรษฐกิจ” ของการเปิดการค้าเสรีมากที่สุด', options:[
+      {t:'รายได้ภาษีศุลกากรลดลงและโครงสร้างเศรษฐกิจเปลี่ยน', ok:true},
+      {t:'เกิดรัฐธรรมนูญ', ok:false},
+      {t:'เกิดสงครามโลก', ok:false},
+      {t:'เกิดการเลือกตั้งครึ่งใบ', ok:false}
+    ]},
+    {id:'Q15', dim:'K', points:2, type:'short', prompt:'เติมคำ: การสร้างอัตลักษณ์ไทยยุคใหม่มักใช้สื่อ เช่น ภาพถ่าย โปสเตอร์ และ _________', answers:['หนังสือพิมพ์','สื่อสิ่งพิมพ์','วิทยุ']},
+
+    // --- P (8 items, total 38 pts) ---
+    {id:'Q16', dim:'P', points:2, type:'mcq', prompt:'แหล่งใด “หลักฐานชั้นต้น” มากที่สุด', options:[
+      {t:'บทความวิชาการปี 2560', ok:false},
+      {t:'จดหมายราชการร่วมสมัยเหตุการณ์', ok:true},
+      {t:'ตำราม.3', ok:false},
+      {t:'หนังสือเรียนปี 2555', ok:false}
+    ]},
+    {id:'Q17', dim:'P', points:2, type:'short', prompt:'ถ้าพบหลักฐานสองชิ้น “ขัดแย้งกัน” คุณจะทำขั้นตอนใดก่อน (ตอบสั้น ๆ 1–5 คำ)', answers:['ตรวจที่มา','ตรวจความน่าเชื่อถือ','ตรวจผู้เขียน','ตรวจบริบท','ตรวจแหล่งที่มา']},
+
+    // Matching 1: เหตุการณ์ ↔ ผล (8 pts)
+    {id:'Q18', dim:'P', points:8, type:'match', prompt:'จับคู่ “เหตุการณ์” ↔ “ผลที่เด่นชัด” (ลากปุ่มสีน้ำเงินไปยังช่องว่างที่ตรงกัน)', pairs:[
+      {L:'สนธิสัญญาเบาว์ริง (2398)', R:'เปิดการค้าเสรี–เศรษฐกิจเปลี่ยน'},
+      {L:'เลิกทาส (ร.5)', R:'แรงงานรับจ้าง–โครงสร้างสังคมใหม่'},
+      {L:'เปลี่ยนการปกครอง 2475', R:'รัฐธรรมนูญ–สถาบันการเมืองใหม่'},
+      {L:'ก่อตั้งอาเซียน', R:'ความร่วมมือภูมิภาค'}
+    ]},
+
+    // Matching 2: หลักฐาน ↔ ประเภท (8 pts)
+    {id:'Q19', dim:'P', points:8, type:'match', prompt:'จับคู่ “หลักฐาน” ↔ “ประเภทหลักฐาน”', pairs:[
+      {L:'ภาพถ่ายร่วมสมัย', R:'ชั้นต้น'},
+      {L:'บทวิเคราะห์นักวิชาการ', R:'ชั้นรอง'},
+      {L:'แผนที่โบราณ', R:'ชั้นต้น'},
+      {L:'บทเรียนประวัติศาสตร์สมัยใหม่', R:'ชั้นรอง'}
+    ]},
+
+    // Categorize 1: ปัจจัย vs ผลกระทบ (7 pts)
+    {id:'Q20', dim:'P', points:7, type:'categorize', prompt:'ลากรายการไปยัง “ปัจจัย” หรือ “ผลกระทบ” ให้ถูกต้อง', cats:{
+      'ปัจจัย':['การขยายตัวของจักรวรรดินิยม','การค้าโลกยุคอุตสาหกรรม'],
+      'ผลกระทบ':['รายได้ศุลกากรลดลง','โครงสร้างเศรษฐกิจเปลี่ยน','เกิดชนชั้นแรงงานเมือง']
+    }},
+
+    // Categorize 2: ชั้นต้น vs ชั้นรอง (7 pts)
+    {id:'Q21', dim:'P', points:7, type:'categorize', prompt:'จัดหมวดหลักฐาน: “ชั้นต้น” หรือ “ชั้นรอง”', cats:{
+      'ชั้นต้น':['จดหมายเหตุราชการ','คำให้การร่วมสมัย'],
+      'ชั้นรอง':['บทความทบทวนวรรณกรรม','หนังสือเรียนสมัยใหม่']
+    }},
+
+    {id:'Q22', dim:'P', points:2, type:'mcq', prompt:'เมื่อพบข้อมูลที่สื่อมวลชนรายงานไม่ตรงกับเอกสารราชการร่วมสมัย ควรทำข้อใด', options:[
+      {t:'เชื่อสื่อทันทีเพราะร่วมสมัยกว่า', ok:false},
+      {t:'ตรวจสอบหลายแหล่งและให้ค่าน้ำหนักหลักฐาน', ok:true},
+      {t:'ละทิ้งทั้งหมด', ok:false},
+      {t:'ถามเพื่อนและตัดสินตามเสียงส่วนใหญ่', ok:false}
+    ]},
+    {id:'Q23', dim:'P', points:2, type:'short', prompt:'อธิบายสั้น ๆ: “อคติของผู้เขียน” ส่งผลต่อการตีความอย่างไร (5–15 คำ)', answers:['อิสระตรวจด้วยคำหลัก']},
+
+    // --- A (7 items, total 32 pts) ---
+    // Case MCQ (4 pts each ×3 = 12)
+    {id:'Q24', dim:'A', points:4, type:'mcq', prompt:'สภานักเรียนโรงเรียนของคุณอยากทำป้ายนิทรรศการ “รัตนโกสินทร์กับเมืองสมัยใหม่” ข้อใดเป็นแนวทางสื่อสารที่รับผิดชอบต่อหลักฐานที่สุด', options:[
+      {t:'ใช้ภาพสวย ๆ จากอินเทอร์เน็ตโดยไม่อ้างอิง', ok:false},
+      {t:'หยิบภาพร่วมสมัย+แผนที่+กราฟเศรษฐกิจ พร้อมอ้างอิงที่มา', ok:true},
+      {t:'สรุปจากความทรงจำของผู้จัดเพียงอย่างเดียว', ok:false},
+      {t:'เน้นความเห็นส่วนตัวของผู้จัดเป็นหลัก', ok:false}
+    ]},
+    {id:'Q25', dim:'A', points:4, type:'mcq', prompt:'ชุมชนของคุณจะปรับปรุงย่านเก่าทางประวัติศาสตร์ แนวทางใด “คำนึงถึงคุณค่าทางวัฒนธรรม” มากที่สุด', options:[
+      {t:'ทุบทิ้งสร้างตึกใหม่ทั้งหมด', ok:false},
+      {t:'อนุรักษ์องค์ประกอบสำคัญโดยใช้เอกสาร/ภาพถ่ายเป็นหลักฐานประกอบ', ok:true},
+      {t:'ทาสีใหม่สไตล์โมเดิร์นโดยไม่ศึกษาอดีต', ok:false},
+      {t:'ปล่อยทิ้งไว้เฉย ๆ', ok:false}
+    ]},
+    {id:'Q26', dim:'A', points:4, type:'mcq', prompt:'ต้องการอธิบายนโยบายหนึ่งในยุคประชาธิปไตยว่ามี “ผลระยะยาว” ต่อสังคมไทย ข้อใดเป็นวิธีที่เหมาะสม', options:[
+      {t:'ดูเฉพาะโพสต์โซเชียลมีเดียสัปดาห์เดียว', ok:false},
+      {t:'รวบรวมหลักฐานหลายประเภทและเปรียบเทียบก่อน–หลังนโยบาย', ok:true},
+      {t:'เชื่อเฉพาะความเห็นของคนดัง', ok:false},
+      {t:'ใช้แบบสำรวจเพียง 5 คน', ok:false}
+    ]},
+
+    // Multi-select scenarios (5 pts ×2 = 10)
+    {id:'Q27', dim:'A', points:5, type:'ms', prompt:'เลือก “หลักฐาน” ที่เหมาะสมเพื่อทำป้ายอธิบายวัฒนธรรมท้องถิ่น (เลือกได้มากกว่า 1)', options:[
+      {t:'ภาพถ่ายร่วมสมัยของประเพณี', ok:true},
+      {t:'บทความวิจัยเกี่ยวกับประเพณีนั้น', ok:true},
+      {t:'มีมในโซเชียลที่ไม่ทราบที่มา', ok:false},
+      {t:'คำบอกเล่าที่ไม่มีปีและผู้ให้ข้อมูล', ok:false},
+      {t:'แผนที่แสดงพื้นที่จัดงาน', ok:true}
+    ]},
+    {id:'Q28', dim:'A', points:5, type:'ms', prompt:'ต้องการประเมิน “ปัจจัยความมั่นคง” ในสมัยรัตนโกสินทร์ตอนปลาย ควรพิจารณาอะไรบ้าง (เลือกให้ครบ)', options:[
+      {t:'ความสัมพันธ์ระหว่างประเทศ', ok:true},
+      {t:'โครงสร้างพื้นฐานและเศรษฐกิจ', ok:true},
+      {t:'สีที่ชอบส่วนตัวของผู้นำ', ok:false},
+      {t:'การศึกษาและสื่อสารมวลชน', ok:true}
+    ]},
+
+    // Short arguments with keyword check (5 pts ×2 = 10)
+    {id:'Q29', dim:'A', points:5, type:'short', prompt:'เขียนข้อเสนอแนะ 2–3 ประโยคเพื่อสื่อสาร “บทบาทของไทยในเวทีภูมิภาค” อย่างรับผิดชอบต่อหลักฐาน (ระบุแหล่งอ้างอิงอย่างน้อย 1 ประเภท)', keyw:['อ้าง','หลักฐาน','อาเซียน','เอกสาร','ภาพถ่าย','แผนที่','สถิติ']},
+    {id:'Q30', dim:'A', points:5, type:'short', prompt:'อธิบายสั้น ๆ ว่า “สิ่งใดบ้างที่เราเชื่อว่าเป็นของดั้งเดิมแต่จริง ๆ แล้วถูกสร้างขึ้นใหม่” (อย่างน้อย 2 ตัวอย่าง พร้อมเหตุผลย่อ)', keyw:['ประดิษฐ','จารีต','หลักฐาน','ตัวอย่าง','เหตุผล']}
+  ]
+};
+
+// ========== Render ==========
+const quizEl = byId('quiz');
+
+function render(){
+  quizEl.innerHTML = '';
+  const sections = [
+    {title:'ส่วนที่ 1: ความรู้ (K) — 15 ข้อ / 30 คะแนน', range:[0,15]},
+    {title:'ส่วนที่ 2: กระบวนการ (P) — 8 ข้อ / 38 คะแนน', range:[15,23]},
+    {title:'ส่วนที่ 3: การประยุกต์ (A) — 7 ข้อ / 32 คะแนน', range:[23,30]}
+  ];
+  sections.forEach(sec=>{
+    const s = document.createElement('section');
+    s.className = 'panel';
+    const h = document.createElement('h2'); h.textContent = sec.title; s.appendChild(h);
+    const wrap = document.createElement('div'); wrap.className='';
+    QUIZ.items.slice(sec.range[0], sec.range[1]).forEach((q,idx)=>{
+      wrap.appendChild(renderItem(q, sec.range[0]+idx+1));
+    });
+    s.appendChild(wrap);
+    quizEl.appendChild(s);
+  });
+  restoreState();
+  updateProgress();
+}
+
+function renderItem(q, num){
+  const card = document.createElement('div');
+  card.className = 'card';
+  const head = document.createElement('div');
+  head.innerHTML = `<h3>ข้อ ${num}. <span class="badge">${q.dim}</span> <span class="muted small">(${q.points} คะแนน)</span></h3><div class="qwrap">${q.prompt}</div>`;
+  card.appendChild(head);
+  const body = document.createElement('div');
+
+  if(q.type==='mcq'){
+    const name = q.id;
+    (q.options||[]).forEach((op,i)=>{
+      const row = document.createElement('label'); row.className='opt';
+      row.innerHTML = `<input type="radio" name="${name}" value="${i}"> <div>${op.t}</div>`;
+      body.appendChild(row);
+    });
+  }
+  else if(q.type==='ms'){
+    (q.options||[]).forEach((op,i)=>{
+      const row = document.createElement('label'); row.className='opt';
+      row.innerHTML = `<input type="checkbox" data-id="${q.id}" value="${i}"> <div>${op.t}</div>`;
+      body.appendChild(row);
+    });
+  }
+  else if(q.type==='short'){
+    const ta = document.createElement('textarea'); ta.placeholder = 'พิมพ์คำตอบสั้น ๆ'; ta.dataset.id=q.id;
+    body.appendChild(ta);
+  }
+  else if(q.type==='match'){
+    // left column: L terms; right: tokens to drag into boxes
+    const pairs = shuffle(q.pairs.map(p=>({...p})));
+    const Lcol = document.createElement('div');
+    const Rcol = document.createElement('div');
+    Lcol.className=''; Rcol.className='';
+    const pairsWrap = document.createElement('div');
+    pairsWrap.className='';
+    const rights = shuffle(pairs.map(p=>p.R));
+
+    pairs.forEach((p,i)=>{
+      const row = document.createElement('div'); row.className='pair-row';
+      row.innerHTML = `<div class="muted">${p.L}</div><div class="center">→</div>`;
+      const dz = document.createElement('div'); dz.className='dropzone'; dz.dataset.id = q.id+"__L"+i; dz.dataset.expect = p.R;
+      row.appendChild(dz);
+      pairsWrap.appendChild(row);
+    });
+
+    const tokenBox = document.createElement('div');
+    tokenBox.className='';
+    rights.forEach((r,i)=>{
+      const t = document.createElement('span'); t.textContent=r; t.className='token'; t.draggable=true; t.dataset.val=r; t.dataset.from=q.id;
+      tokenBox.appendChild(t);
+    });
+
+    const cols = document.createElement('div'); cols.className='cols';
+    const leftBox = document.createElement('div'); leftBox.appendChild(pairsWrap);
+    const rightBox = document.createElement('div'); rightBox.innerHTML = '<div class="muted small">ลากปุ่มสีน้ำเงินมาวางที่ช่องว่าง</div>';
+    rightBox.appendChild(tokenBox);
+    cols.appendChild(leftBox); cols.appendChild(rightBox);
+    body.appendChild(cols);
+  }
+  else if(q.type==='categorize'){
+    const allItems = shuffle(Object.values(q.cats).flat());
+    const binsWrap = document.createElement('div'); binsWrap.className='cols';
+    Object.keys(q.cats).forEach(cat=>{
+      const box = document.createElement('div'); box.className='card';
+      box.innerHTML = `<b>${cat}</b><div class="dropzone" data-cat="${cat}" data-id="${q.id}"></div>`;
+      binsWrap.appendChild(box);
+    });
+    const src = document.createElement('div'); src.className='card';
+    const srcList = document.createElement('div');
+    allItems.forEach(it=>{
+      const t = document.createElement('span'); t.textContent=it; t.className='token'; t.draggable=true; t.dataset.val=it; t.dataset.from=q.id; srcList.appendChild(t);
+    });
+    src.innerHTML='<b>ลากไปใส่หมวดหมู่ที่ถูกต้อง</b>';
+    src.appendChild(srcList);
+    const cols = document.createElement('div'); cols.className='cols'; cols.appendChild(src); cols.appendChild(binsWrap);
+    body.appendChild(cols);
+  }
+
+  card.appendChild(body);
+  return card;
+}
+
+// Drag & Drop handlers for tokens
+let dragToken=null;
+document.addEventListener('dragstart',e=>{
+  if(e.target.classList.contains('token')){
+    dragToken=e.target;
+  }
+});
+document.addEventListener('dragover',e=>{
+  if(e.target.classList.contains('dropzone')) e.preventDefault();
+});
+document.addEventListener('drop',e=>{
+  if(!dragToken) return;
+  const dz = e.target.closest('.dropzone');
+  if(dz){ dz.appendChild(dragToken); saveState(); updateProgress(); }
+});
+
+document.addEventListener('change', e=>{ if(e.target.matches('input, textarea, select')){ saveState(); updateProgress(); } });
+document.addEventListener('input', e=>{ if(e.target.matches('textarea')){ saveState(); }});
+
+// ========== Scoring ==========
+function normalizeText(s){ return (s||'').toString().trim().toLowerCase().replace(/\s+/g,' '); }
+
+function scoreItem(q){
+  if(q.type==='mcq'){
+    const sel = $$(`input[name="${q.id}"]:checked`);
+    if(sel.length===0) return {pts:0, resp:''};
+    const i = parseInt(sel[0].value,10);
+    const ok = q.options[i]?.ok; return {pts: ok? q.points:0, resp: q.options[i]?.t||''};
+  }
+  if(q.type==='ms'){
+    const cbs = $$(`input[type=checkbox][data-id="${q.id}"]`);
+    if(cbs.length===0) return {pts:0, resp:''};
+    let selIdx=[], selTxt=[]; cbs.forEach((cb,i)=>{ if(cb.checked){ selIdx.push(i); selTxt.push(q.options[i].t);} });
+    const totalCorrect = q.options.filter(o=>o.ok).length;
+    const correctSelected = selIdx.filter(i=>q.options[i].ok).length;
+    const wrongSelected = selIdx.filter(i=>!q.options[i].ok).length;
+    let frac = Math.max(0, (correctSelected/totalCorrect) - (wrongSelected/Math.max(1,q.options.length-totalCorrect))*0.5 );
+    const pts = Math.round(q.points * frac * 100)/100;
+    return {pts, resp: selTxt.join(' | ')};
+  }
+  if(q.type==='short'){
+    const ta = $$(`textarea[data-id="${q.id}"]`)[0];
+    const ans = normalizeText(ta?.value||'');
+    if(!ans) return {pts:0, resp:''};
+    if(q.answers){
+      const ok = q.answers.some(a=> ans.includes(normalizeText(a)) );
+      return {pts: ok? q.points:0, resp: ta.value};
+    }
+    if(q.keyw){
+      // partial credit by hitting keywords (>=2 ⇒ full; 1 ⇒ half)
+      let hit=0; q.keyw.forEach(k=>{ if(ans.includes(normalizeText(k))) hit++; });
+      const pts = hit>=2? q.points : (hit===1? Math.round(q.points*0.5):0);
+      return {pts, resp: ta.value};
+    }
+    return {pts:0, resp:ta.value};
+  }
+  if(q.type==='match'){
+    // Each correct box yields equal fraction of points
+    const rows = $$(`.dropzone[data-id^="${q.id}__L"]`);
+    const per = q.points / rows.length;
+    let pts=0, resp=[];
+    rows.forEach(r=>{
+      const tok = r.querySelector('.token');
+      const got = tok?.dataset.val||''; const expect = r.dataset.expect;
+      if(got && normalizeText(got)===normalizeText(expect)) pts+=per;
+      resp.push(`${r.previousSibling.previousSibling?.textContent||''}=>${got}`);
+    });
+    return {pts: Math.round(pts*100)/100, resp: resp.join(' | ')};
+  }
+  if(q.type==='categorize'){
+    const cats = Object.keys(q.cats);
+    const total = Object.values(q.cats).flat().length;
+    const per = q.points/total; let pts=0; let resp=[];
+    cats.forEach(cat=>{
+      const box = $(`.dropzone[data-id="${q.id}"][data-cat="${cat}"]`);
+      const toks = $$('.token', box);
+      toks.forEach(t=>{ if(QUIZ.items.some(it=>it===q) && q.cats[cat].includes(t.dataset.val)) pts+=per; });
+      resp.push(`${cat}:{${toks.map(t=>t.dataset.val).join('; ')}}`);
+    });
+    return {pts: Math.round(pts*100)/100, resp: resp.join(' | ')};
+  }
+  return {pts:0, resp:''};
+}
+
+function compute(){
+  const sums = {K:0,P:0,A:0,total:0};
+  const answers = [];
+  QUIZ.items.forEach(q=>{
+    const {pts, resp} = scoreItem(q);
+    sums[q.dim]+=pts; sums.total += pts;
+    answers.push({id:q.id, dim:q.dim, type:q.type, pts, resp});
+  });
+  sums.K = Math.round(sums.K*100)/100; sums.P=Math.round(sums.P*100)/100; sums.A=Math.round(sums.A*100)/100; sums.total=Math.round(sums.total*100)/100;
+  return {sums, answers};
+}
+
+// ========== State (LocalStorage) ==========
+const KEY='midterm_S43_state_v100';
+
+function saveState(){
+  const state={
+    name: byId('name').value,
+    sid: byId('sid').value,
+    room: byId('room').value,
+    radios: {}, checks:{}, shorts:{},
+    dnd: {}, cats:{},
+    selfK: byId('selfK').value,
+    selfP: byId('selfP').value,
+    selfA: byId('selfA').value,
+    reflection: byId('reflection').value
+  };
+  QUIZ.items.forEach(q=>{
+    if(q.type==='mcq'){
+      const r = $$(`input[name="${q.id}"]:checked`)[0];
+      if(r) state.radios[q.id]=r.value;
+    } else if(q.type==='ms'){
+      const arr=[]; $$(`input[type=checkbox][data-id="${q.id}"]`).forEach((cb,i)=>{ if(cb.checked) arr.push(i); });
+      state.checks[q.id]=arr;
+    } else if(q.type==='short'){
+      const ta = $$(`textarea[data-id="${q.id}"]`)[0];
+      if(ta) state.shorts[q.id]=ta.value;
+    } else if(q.type==='match'){
+      const rows = $$(`.dropzone[data-id^="${q.id}__L"]`);
+      state.dnd[q.id]=rows.map(r=>{ const tok=r.querySelector('.token'); return tok? tok.dataset.val:''; });
+    } else if(q.type==='categorize'){
+      const entry={}; Object.keys(q.cats).forEach(cat=>{
+        const box = $(`.dropzone[data-id="${q.id}"][data-cat="${cat}"]`);
+        entry[cat]= $$('.token', box).map(t=>t.dataset.val);
+      }); state.cats[q.id]=entry;
+    }
+  });
+  localStorage.setItem(KEY, JSON.stringify(state));
+}
+
+function restoreState(){
+  const raw = localStorage.getItem(KEY); if(!raw) return;
+  try{
+    const s = JSON.parse(raw);
+    byId('name').value = s.name||'';
+    byId('sid').value = s.sid||'';
+    byId('room').value = s.room||'';
+    QUIZ.items.forEach(q=>{
+      if(q.type==='mcq'){
+        const v = s.radios?.[q.id]; if(v!==undefined){ const r = $$(`input[name="${q.id}"][value="${v}"]`)[0]; if(r) r.checked=true; }
+      } else if(q.type==='ms'){
+        (s.checks?.[q.id]||[]).forEach(i=>{ const cb = $$(`input[type=checkbox][data-id="${q.id}"][value="${i}"]`)[0]; if(cb) cb.checked=true; });
+      } else if(q.type==='short'){
+        const ta = $$(`textarea[data-id="${q.id}"]`)[0]; if(ta) ta.value = s.shorts?.[q.id]||'';
+      } else if(q.type==='match'){
+        const rows = $$(`.dropzone[data-id^="${q.id}__L"]`);
+        const vals = s.dnd?.[q.id]||[];
+        rows.forEach((r,i)=>{
+          const expect = vals[i];
+          if(expect){
+            // find token with this value in document
+            const token = $$(`.token[data-from="${q.id}"]`).find(t=>t.dataset.val===expect);
+            if(token) r.appendChild(token);
+          }
+        });
+      } else if(q.type==='categorize'){
+        const entry = s.cats?.[q.id]||{};
+        Object.keys(entry).forEach(cat=>{
+          const box = $(`.dropzone[data-id="${q.id}"][data-cat="${cat}"]`);
+          (entry[cat]||[]).forEach(val=>{
+            const token = $$(`.token[data-from="${q.id}"]`).find(t=>t.dataset.val===val);
+            if(token) box.appendChild(token);
+          });
+        });
+      }
+    });
+    byId('selfK').value = s.selfK||'';
+    byId('selfP').value = s.selfP||'';
+    byId('selfA').value = s.selfA||'';
+    byId('reflection').value = s.reflection||'';
+  }catch(e){ console.warn('restore error', e); }
+}
+
+function resetAll(){
+  localStorage.removeItem(KEY); location.reload();
+}
+
+function updateProgress(){
+  const totalInputs = $$('input[type=radio], input[type=checkbox], textarea').length + $$('.dropzone').length;
+  let filled = $$('input[type=radio]:checked, input[type=checkbox]:checked').length;
+  $$('textarea').forEach(t=>{ if(t.value.trim().length>0) filled++; });
+  $$('.dropzone').forEach(d=>{ if(d.querySelector('.token')) filled++; });
+  const pct = Math.min(100, Math.round(100*filled/Math.max(1,totalInputs)));
+  byId('progbar').style.width = pct+'%';
+}
+
+// ========== Export ==========
+function exportCSV(res){
+  const meta = QUIZ.meta;
+  const name = byId('name').value||'';
+  const sid = byId('sid').value||'';
+  const room = byId('room').value||'';
+  const selfK = byId('selfK').value||'';
+  const selfP = byId('selfP').value||'';
+  const selfA = byId('selfA').value||'';
+  const reflection = byId('reflection').value||'';
+  const ua = navigator.userAgent;
+  const ts = new Date().toISOString();
+
+  const headers = [
+    'Timestamp','Name','StudentId','Room','UserAgent',
+    ...QUIZ.items.map(q=>`${q.id}_resp`),
+    ...QUIZ.items.map(q=>`${q.id}_pts`),
+    'K_score','P_score','A_score','Total_score','SelfK','SelfP','SelfA','Reflection'
+  ];
+  const row = [
+    ts,name,sid,room,ua,
+    ...res.answers.map(a=>a.resp),
+    ...res.answers.map(a=>a.pts),
+    res.sums.K,res.sums.P,res.sums.A,res.sums.total,selfK,selfP,selfA,reflection
+  ].map(escapeCsv).join(',');
+
+  const csv = headers.join(',')+'\n'+row+'\n';
+  const fname = `Midterm_S43_${sid||'noid'}.csv`;
+  download(fname, csv);
+}
+
+function exportJSON(res){
+  const payload = {
+    meta: QUIZ.meta,
+    student: {name:byId('name').value||'', sid:byId('sid').value||'', room:byId('room').value||''},
+    sums: res.sums,
+    answers: res.answers,
+    self: {K:byId('selfK').value||'', P:byId('selfP').value||'', A:byId('selfA').value||'', reflection: byId('reflection').value||''},
+    ts: new Date().toISOString(),
+    ua: navigator.userAgent
+  };
+  download(`Midterm_S43_${payload.student.sid||'noid'}.json`, JSON.stringify(payload,null,2));
+}
+
+// ========== Wire buttons ==========
+byId('calcBtn').addEventListener('click',()=>{
+  const res = compute();
+  byId('sumK').textContent = res.sums.K.toFixed(2);
+  byId('sumP').textContent = res.sums.P.toFixed(2);
+  byId('sumA').textContent = res.sums.A.toFixed(2);
+  byId('sumTotal').textContent = `${res.sums.total.toFixed(2)} / 100`;
+  byId('exportCsvBtn').disabled=false;
+  byId('exportJsonBtn').disabled=false;
+  saveState();
+});
+byId('exportCsvBtn').addEventListener('click',()=>{ const res = compute(); exportCSV(res); });
+byId('exportJsonBtn').addEventListener('click',()=>{ const res = compute(); exportJSON(res); });
+byId('resetBtn').addEventListener('click',()=>{ if(confirm('ยืนยันล้างคำตอบทั้งหมด?')) resetAll(); });
+
+render();
+</script>
+</body>
+</html>

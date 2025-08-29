@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>Interactive History Quiz ม.2</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <style>
+    :root{
+      --bg:#0b122a;--panel:#0f1c3a;--card:#1e293b;--ink:#e6f1ff;--muted:#bcd3ff;--accent:#38bdf8;--accent2:#60a5fa;--ok:#22c55e;--warn:#f59e0b;--bad:#ef4444;
+      --bd:#2b3f63;
+    }
+    *{box-sizing:border-box}
+    body{font-family:"Noto Sans Thai",system-ui,Segoe UI,Inter,sans-serif;margin:0;background:radial-gradient(1200px 600px at 20% -10%, #132a57, transparent),linear-gradient(180deg,#0b1328,#0b122a 40%,#0a0f21);color:var(--ink)}
+    header{position:sticky;top:0;z-index:10;background:rgba(15,28,58,.7);backdrop-filter:blur(8px);border-bottom:1px solid var(--bd)}
+    .wrap{max-width:1000px;margin:auto;padding:18px}
+    h1{margin:0;font-weight:800;color:var(--accent)}
+    .sub{color:var(--muted)}
+    .toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+    .btn{appearance:none;border:1px solid var(--bd);background:linear-gradient(180deg,#0f1c3a,#0b162d);color:var(--ink);padding:10px 14px;border-radius:12px;cursor:pointer}
+    .btn:hover{filter:brightness(1.15)}
+    .btn.primary{background:linear-gradient(180deg,#1e40af,#1d4ed8);border-color:#2b5ad6}
+    .btn.good{background:linear-gradient(180deg,#15803d,#16a34a);border-color:#1ea35a}
+    main{max-width:1000px;margin:auto;padding:18px;display:grid;gap:16px}
+    .card{background:linear-gradient(180deg,#152441,#0f1c3a);border:1px solid var(--bd);border-radius:16px;box-shadow:0 10px 24px rgba(0,0,0,.35)}
+    .hd{padding:14px 16px;border-bottom:1px solid var(--bd)}
+    .bd{padding:16px}
+    .progress{height:10px;background:#0c1731;border:1px solid var(--bd);border-radius:999px;overflow:hidden}
+    .bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+    .q{padding:14px;border-radius:14px;background:#0c1731;border:1px solid var(--bd);margin-bottom:14px}
+    .q h3{margin:.2rem 0 0.6rem 0}
+    .options{display:grid;gap:10px}
+    .opt{display:flex;gap:10px;align-items:flex-start;padding:10px;border:1px solid var(--bd);background:#0b162d;border-radius:12px;cursor:pointer}
+    .opt input{margin-top:3px}
+    .pair-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .bank,.targets{border:1px dashed var(--bd);border-radius:12px;min-height:90px;padding:10px;background:#0b162d}
+    .chip{display:inline-block;background:#1e293b;border:1px solid var(--bd);border-radius:999px;padding:6px 10px;margin:5px;cursor:grab}
+    .slot{display:flex;align-items:center;gap:8px;border:1px solid var(--bd);background:#0b162d;border-radius:12px;padding:8px;margin:6px 0}
+    .drop{min-width:80px;min-height:28px;border:1px dashed var(--bd);border-radius:999px;padding:4px 8px}
+    .order{display:flex;flex-direction:column;gap:8px}
+    .row{display:flex;gap:10px;align-items:center;border:1px solid var(--bd);border-radius:12px;background:#0b162d;padding:8px;cursor:grab}
+    .row .drag{opacity:.7}
+    textarea,input[type=text]{width:100%;padding:10px;border:1px solid var(--bd);border-radius:12px;background:#0b162d;color:var(--ink)}
+    .viz{display:flex;justify-content:center;align-items:center;background:#0b162d;border:1px solid var(--bd);border-radius:12px;height:220px}
+    svg{max-width:100%;height:200px}
+    .marker{cursor:pointer;transition:transform .1s}
+    .marker:hover{transform:scale(1.1)}
+    .foot{display:flex;gap:10px;justify-content:flex-end}
+    .note{color:var(--muted)}
+    .sum-item{border:1px solid var(--bd);border-radius:12px;padding:10px;margin:8px 0;background:#0b162d}
+    .mini{font-size:.9rem;color:var(--muted)}
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>แบบทดสอบกลางภาค ประวัติศาสตร์ ม.2</h1>
+    <div class="sub">เนื้อหา: สุโขทัย – อยุธยา • ผสมรูปแบบคำถาม • ระบบ Partial Credit (1–5)</div>
+    <div class="toolbar">
+      <!-- ปุ่มระบบไฟล์ -->
+      <button class="btn" id="btnSave">บันทึกชั่วคราว</button>
+      <button class="btn" id="btnExportCSV">Export CSV</button>
+      <button class="btn" id="btnExportJSON">Export JSON</button>
+      <!-- ปุ่มนำทาง Web App -->
+      <button class="btn" id="btnHome">🏠 กลับเมนูหลัก</button>
+      <button class="btn" id="btnPerf">🎨 ไปหน้า Performance Task</button>
+      <span class="sub" id="pill">พร้อมเริ่ม</span>
+    </div>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+  </div>
+</header>
+
+<main>
+  <!-- ข้อมูลผู้สอบ -->
+  <section class="card">
+    <div class="hd"><b>ข้อมูลผู้สอบ</b></div>
+    <div class="bd">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div><label>ชื่อ–สกุล<input type="text" id="stuName" placeholder="เช่น กิตติคุณ ใจดี"></label></div>
+        <div><label>รหัส/เลขที่<input type="text" id="stuId" placeholder="เช่น ม2/3 เลขที่ 12"></label></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px">
+        <div><label>ห้อง/กลุ่มเรียน<input type="text" id="stuClass" placeholder="เช่น ม.2/3"></label></div>
+        <div><label>หมายเหตุ<input type="text" id="stuNote" placeholder="ถ้ามี"></label></div>
+      </div>
+      <div class="foot" style="margin-top:10px">
+        <button class="btn" id="btnSaveInfo">บันทึกข้อมูลผู้สอบ</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ข้อสอบทั้งหมด -->
+  <section class="card">
+    <div class="hd"><b>ข้อสอบทั้งหมด</b> <span class="mini">(20 ข้อ)</span></div>
+    <div class="bd" id="stage"></div>
+  </section>
+
+  <!-- สรุปย่อ -->
+  <section class="card">
+    <div class="hd">สรุปย่อ</div>
+    <div class="bd">
+      <div>ตอบแล้ว: <b id="done">0</b>/20 • คะแนนอัตโนมัติ: <b id="score">0</b></div>
+      <div class="note">ข้อที่เป็นคำตอบเปิด เช่น สถานการณ์/เอกสาร ให้ครูตรวจเพิ่ม</div>
+      <div style="margin-top:10px">
+        <button class="btn good" id="btnShowSummary">ดูสรุปคะแนน</button>
+      </div>
+      <div id="summaryBox" style="margin-top:12px"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+/* ========= ใส่ URL ของ Web App (Deploy แล้ว) ========= */
+const WEB_URL = "https://script.google.com/macros/s/AKfycbyj0SvyKfNtmWbnI7m2fhHTHvqP-Of-X8Y3SzjwOoj0C5gmi9dWM8Z-Iz8q3gexeAD4/exec";
+
+/* ========= สร้างลิงก์นำทางไปแต่ละหน้า ========= */
+const NAV = {
+  base: WEB_URL,
+  menu: `${WEB_URL}?page=Menu`,
+  mcq:  `${WEB_URL}?page=MCQs`,
+  perf: `${WEB_URL}?page=Perf`,
+};
+// ปุ่มนำทาง
+document.getElementById('btnHome').onclick = ()=> window.location.href = NAV.menu;
+document.getElementById('btnPerf').onclick = ()=> window.location.href = NAV.perf;
+
+/* ========= โครงสร้างข้อสอบ ========= */
+// helpers
+function o(text,score){return {text,score}};
+function ctx(title,desc){return {title,desc}};
+function qMcq(id,text,options,context){return {id,type:'mcq',text,options,context}};
+function qMatch(id,text,pairs){return {id,type:'match',text,pairs}};
+function qOrder(id,text,items,answerIdx){return {id,type:'order',text,items,answerIdx}};
+function qHot(id,text,markers,context){return {id,type:'hotspot',text,markers,context}};
+function qShort(id,text){return {id,type:'short',text}};
+function qDoc(id,text){return {id,type:'doc',text}};
+
+// ข้อสอบ (20 ข้อ)
+const QUIZ=[
+  qMcq(1,"การสถาปนาอาณาจักรสุโขทัยเกิดขึ้นในรัชสมัยใด?",[
+    o("สมเด็จพระนเรศวร",1),o("พ่อขุนศรีอินทราทิตย์",5),o("พ่อขุนรามคำแหง",4),o("สมเด็จพระบรมไตรโลกนาถ",2),o("พระมหาจักรพรรดิ",3)
+  ],ctx("ลำดับเหตุการณ์","พ่อขุนศรีอินทราทิตย์")),
+  qMcq(2,"ลักษณะการปกครองสมัยสุโขทัยที่สำคัญคือข้อใด?",[
+    o("กฎหมายตราสามดวง",1),o("พ่อปกครองลูก",5),o("ระบบไพร่",3),o("เจ้าขุนมูลนายเข้มงวด",4),o("เน้นการค้าตะวันตก",2)
+  ],ctx("แนวคิด","สัมพันธ์กษัตริย์–ราษฎรใกล้ชิด")),
+  qMcq(3,"เหตุผลที่สุโขทัยรุ่งเรืองด้านเกษตรกรรม?",[
+    o("ค้าตะวันตก",1),o("ชลประทานลุ่มน้ำยม",5),o("ส่วยอากร",3),o("ส่งออกจีน",4),o("กฎหมายไพร่",2)
+  ]),
+  qMatch(4,"จับคู่กษัตริย์กับผลงาน",[
+    ["พ่อขุนรามคำแหง","ประดิษฐ์ลายสือไท"],
+    ["สมเด็จพระนเรศวร","ประกาศอิสรภาพ"],
+    ["สมเด็จพระนารายณ์","สัมพันธ์ฝรั่งเศส"]
+  ]),
+  qOrder(5,"เรียงเหตุการณ์ต่อไปนี้ให้ถูกต้อง (เก่าสุด → ใหม่สุด)",[
+    "สถาปนาสุโขทัย","ลายสือไท","สถาปนาอยุธยา","เสียกรุงครั้งที่ 1"
+  ],[0,1,2,3]),
+  qHot(6,"จุดใดในแผนภาพแทน 'อยุธยา' ได้ถูกต้องที่สุด?",
+    [
+      {x:30,y:60,label:"A",score:3},
+      {x:55,y:55,label:"B",score:5},
+      {x:75,y:40,label:"C",score:2},
+      {x:40,y:30,label:"D",score:4},
+      {x:20,y:20,label:"E",score:1}
+    ],ctx("คำใบ้","อยุธยาอยู่ลุ่มเจ้าพระยาตอนล่าง")),
+  qDoc(7,"จากข้อความ 'ในน้ำมีปลา ในนามีข้าว' ของศิลาจารึกหลักที่ 1 สะท้อนเศรษฐกิจอย่างไร?"),
+  qShort(8,"อธิบายเหตุผล 2 ประการที่อยุธยาเสียกรุงครั้งที่ 2 (2310)"),
+  qMcq(9,"กรุงศรีอยุธยาสถาปนาโดยใคร?",[
+    o("สมเด็จพระนเรศวร",3),o("สมเด็จพระรามาธิบดีที่ 1",5),o("สมเด็จพระบรมไตรโลกนาถ",4),o("สมเด็จพระนารายณ์",2),o("พระมหาจักรพรรดิ",1)
+  ]),
+  qMcq(10,"การปกครองอยุธยาต่างจากสุโขทัยตรงไหน?",[
+    o("รวมศูนย์อำนาจมากขึ้น",5),o("เสรีภาพท้องถิ่น",2),o("ไม่มีเจ้าขุนมูลนาย",1),o("ไม่เกณฑ์แรงงาน",3),o("ไม่มีภาษี",4)
+  ]),
+  qMcq(11,"อยุธยารุ่งเรืองด้านการค้ากับชาติใดมากช่วงแรก?",[
+    o("ญี่ปุ่น",5),o("อังกฤษ",2),o("โปรตุเกส",4),o("ฝรั่งเศส",3),o("จีน",1)
+  ]),
+  qMcq(12,"ศิลปวัฒนธรรมอยุธยาเด่นด้านใด?",[
+    o("โขนและรามเกียรติ์",5),o("เพลงพื้นบ้าน",3),o("หนังตะลุง",2),o("ละครโทรทัศน์",1),o("บัลเลต์",4)
+  ]),
+  qMcq(13,"ไทย–โปรตุเกสสัมพันธ์เรื่องใด?",[
+    o("เผยแพร่พุทธศาสนา",2),o("การค้าและอาวุธ",5),o("สถาปนาราชวงศ์ใหม่",1),o("เกณฑ์แรงงาน",3),o("แต่งงานราชวงศ์",4)
+  ]),
+  qMcq(14,"สาเหตุสำคัญของการเสียกรุงครั้งที่ 2?",[
+    o("อ่อนแอการปกครอง",5),o("ภัยธรรมชาติ",1),o("โรคระบาด",2),o("ค้าขาดทุน",3),o("รุกรานญี่ปุ่น",4)
+  ]),
+  qMcq(15,"สมเด็จพระนเรศวรสำคัญด้านใด?",[
+    o("ประกาศอิสรภาพจากพม่า",5),o("สร้างพระแก้วมรกต",1),o("ทำสนธิสัญญาเบาว์ริง",2),o("ตราสามดวง",3),o("ค้ากับฝรั่งเศส",4)
+  ]),
+  qMcq(16,"พงศาวดารอยุธยาเป็นหลักฐานแบบใด?",[
+    o("ลายลักษณ์อักษร",5),o("โบราณคดี",3),o("วัตถุ",2),o("ไม่ลายลักษณ์",4),o("มุขปาฐะ",1)
+  ]),
+  qOrder(17,"เรียงเหตุการณ์อยุธยาต่อไปนี้ (เก่าสุด → ใหม่สุด)",[
+    "สถาปนากรุงศรีอยุธยา","เสียกรุงครั้งที่ 1","สมเด็จพระนเรศวรประกาศอิสรภาพ","เสียกรุงครั้งที่ 2"
+  ],[0,1,2,3]),
+  qMatch(18,"จับคู่แนวคิด/งานศิลป์กับสมัย",[
+    ["พ่อปกครองลูก","สุโขทัย"],
+    ["โขน–รามเกียรติ์","อยุธยา"],
+    ["การค้ากับญี่ปุ่น","อยุธยา"]
+  ]),
+  qHot(19,"คลิกเลือกจุดที่ใกล้เคียง 'สุโขทัย' มากที่สุดในแผนภาพ",[
+    {x:25,y:30,label:"A",score:5},
+    {x:50,y:20,label:"B",score:3},
+    {x:70,y:35,label:"C",score:2},
+    {x:40,y:55,label:"D",score:4},
+    {x:80,y:65,label:"E",score:1}
+  ]),
+  qShort(20,"สถานการณ์: หากคุณเป็นขุนนางอยุธยาช่วงภัยคุกคามจากพม่า คุณจะเสนอแนวทางรับมือ 2 ข้อ พร้อมเหตุผลสั้น ๆ")
+];
+
+/* ========= LocalStorage ========= */
+const LS_KEY = 'm2_history_quiz_state_v1';
+
+/* ========= State & Elements ========= */
+const state={i:0,answers:{}};
+const els={
+  stage:document.getElementById('stage'),
+  bar:document.getElementById('bar'),
+};
+
+/* ========= Toolbar events ========= */
+document.getElementById('btnSave').onclick=()=>{ autosave(true); alert('บันทึกชั่วคราวแล้ว'); };
+document.getElementById('btnExportCSV').onclick=exportCSV;
+document.getElementById('btnExportJSON').onclick=exportJSON;
+document.getElementById('btnSaveInfo').onclick=()=>{ autosave(true); alert('บันทึกข้อมูลผู้สอบแล้ว'); };
+document.getElementById('btnShowSummary').onclick=showSubmit;
+
+/* ========= Autosave on inputs ========= */
+['stuName','stuId','stuClass','stuNote'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', ()=>autosave());
+});
+
+/* ========= Restore, render, beforeunload ========= */
+restoreFromLocalStorage();
+renderAll();
+window.addEventListener('beforeunload', autosave);
+
+/* ========= Render ALL questions ========= */
+function renderAll(){
+  els.stage.innerHTML='';
+  QUIZ.forEach((q,idx)=>{
+    els.stage.appendChild(renderQuestion(q, idx+1));
+  });
+  updateHUD();
+}
+
+function renderQuestion(q, no){
+  const box=document.createElement('div'); box.className='q';
+  const h=document.createElement('h3'); 
+  h.innerHTML=`ข้อ ${no}. ${q.text}`;
+  box.appendChild(h);
+
+  // ปุ่มบริบทเฉพาะข้อนั้น (ถ้ามี)
+  if(q.context || q.type==='doc'){
+    const bx=document.createElement('div');
+    const b=document.createElement('button'); b.className='btn'; b.textContent='ดูบริบท/หลักฐาน';
+    b.onclick=()=>{
+      if(q.context){ alert(`${q.context.title||'บริบท'}:\n${q.context.desc}`); }
+      else if(q.type==='doc'){ alert('หลักฐาน: ศิลาจารึกหลักที่ 1 — วลี “ในน้ำมีปลา ในนามีข้าว” สะท้อนความอุดมสมบูรณ์และระบบชลประทาน'); }
+    };
+    bx.appendChild(b); box.appendChild(bx);
+  }
+
+  if(q.type==='mcq'){
+    const opts=document.createElement('div'); opts.className='options';
+    q.options.forEach((op,idx)=>{
+      const lbl=document.createElement('label'); lbl.className='opt';
+      const ip=document.createElement('input'); ip.type='radio'; ip.name='q'+q.id; ip.value=op.score; ip.dataset.index=idx;
+      if(state.answers[q.id]?.choice===idx) ip.checked=true;
+      ip.onchange=()=>{
+        state.answers[q.id]={type:'mcq',choice:idx,score:op.score,choiceText:q.options[idx].text};
+        updateHUD(); autosave();
+      };
+      lbl.append(ip, document.createTextNode(op.text));
+      opts.appendChild(lbl);
+    });
+    box.appendChild(opts);
+  }
+
+  if(q.type==='match'){
+    const wrap=document.createElement('div'); wrap.className='pair-grid';
+    const bank=document.createElement('div'); bank.className='bank';
+    const targets=document.createElement('div'); targets.className='targets';
+    const lefts=q.pairs.map(p=>p[0]); const rights=q.pairs.map(p=>p[1]);
+
+    lefts.forEach(txt=>{
+      const chip=document.createElement('span'); chip.className='chip'; chip.textContent=txt; chip.draggable=true; chip.dataset.value=txt;
+      chip.ondragstart=e=>e.dataTransfer.setData('text/plain',txt); bank.appendChild(chip);
+    });
+    bank.ondragover=e=>e.preventDefault();
+    bank.ondrop=e=>{
+      e.preventDefault();
+      const val=e.dataTransfer.getData('text/plain');
+      const chip=[...box.querySelectorAll('.chip')].find(c=>c.dataset.value===val);
+      if(chip) bank.appendChild(chip);
+      saveMatch();
+    };
+    rights.forEach(r=>{
+      const slot=document.createElement('div'); slot.className='slot';
+      const lab=document.createElement('div'); lab.textContent=r;
+      const drop=document.createElement('div'); drop.className='drop';
+      drop.ondragover=e=>e.preventDefault();
+      drop.ondrop=e=>{
+        e.preventDefault();
+        const val=e.dataTransfer.getData('text/plain');
+        const chip=[...box.querySelectorAll('.chip')].find(c=>c.dataset.value===val);
+        if(chip) drop.appendChild(chip);
+        saveMatch();
+      };
+      slot.append(lab,drop); targets.appendChild(slot);
+    });
+    function saveMatch(){
+      const map={};
+      [...targets.querySelectorAll('.slot')].forEach(s=>{
+        const right=s.firstChild.textContent;
+        const chip=s.querySelector('.chip');
+        if(chip) map[right]=chip.dataset.value;
+      });
+      let ok=0; q.pairs.forEach(([L,R])=>{ if(map[R]===L) ok++; });
+      const score=Math.round((ok/q.pairs.length)*5);
+      state.answers[q.id]={type:'match',map,score};
+      updateHUD(); autosave();
+    }
+    // restore
+    const saved=state.answers[q.id]?.map;
+    wrap.append(bank,targets); box.appendChild(wrap);
+    if(saved){
+      for(const [right,left] of Object.entries(saved)){
+        const chip=[...bank.querySelectorAll('.chip')].find(c=>c.dataset.value===left) 
+          || [...box.querySelectorAll('.chip')].find(c=>c.dataset.value===left);
+        const slot=[...targets.querySelectorAll('.slot')].find(s=>s.firstChild.textContent===right);
+        if(chip&&slot) slot.querySelector('.drop').appendChild(chip);
+      }
+    }
+  }
+
+  if(q.type==='order'){
+    const list=document.createElement('div'); list.className='order';
+    const currentOrder = state.answers[q.id]?.order || q.items.slice();
+    currentOrder.forEach(txt=>{
+      const row=document.createElement('div'); row.className='row'; row.draggable=true; row.textContent=txt;
+      row.ondragstart=e=>{e.dataTransfer.setData('text/plain',txt); row.classList.add('drag');};
+      row.ondragend=()=>row.classList.remove('drag');
+      row.ondragover=e=>e.preventDefault();
+      row.ondrop=e=>{
+        e.preventDefault();
+        const val=e.dataTransfer.getData('text/plain');
+        const kids=[...list.children].map(x=>x.textContent);
+        const from=kids.indexOf(val);
+        const to=[...list.children].indexOf(row);
+        if(from>-1){
+          list.insertBefore(list.children[from], to>from? row.nextSibling: row);
+          saveOrder();
+        }
+      };
+      list.appendChild(row);
+    });
+    function saveOrder(){
+      const order=[...list.children].map(x=>x.textContent);
+      const correct=q.answerIdx.map(i=>q.items[i]).join('|');
+      const cur=order.join('|');
+      const sc = (correct===cur)?5: (commonPrefixLen(correct,cur)>=2?3:1);
+      state.answers[q.id]={type:'order',order,score:sc};
+      updateHUD(); autosave();
+    }
+    box.appendChild(list);
+  }
+
+  if(q.type==='hotspot'){
+    const viz=document.createElement('div'); viz.className='viz';
+    const svg=document.createElementNS('http://www.w3.org/2000/svg','svg'); svg.setAttribute('viewBox','0 0 100 70');
+    const bg=document.createElementNS(svg.namespaceURI,'rect'); bg.setAttribute('x',5); bg.setAttribute('y',5); bg.setAttribute('width',90); bg.setAttribute('height',60); bg.setAttribute('fill','#0a1a35'); bg.setAttribute('stroke','#35507c'); svg.appendChild(bg);
+    const savedChoice = state.answers[q.id]?.choice;
+    q.markers.forEach((m,idx)=>{
+      const g=document.createElementNS(svg.namespaceURI,'g'); g.classList.add('marker');
+      const c=document.createElementNS(svg.namespaceURI,'circle'); c.setAttribute('cx',m.x); c.setAttribute('cy',m.y); c.setAttribute('r',3.2); c.setAttribute('fill', (savedChoice===idx)? '#22c55e':'#38bdf8');
+      const t=document.createElementNS(svg.namespaceURI,'text'); t.setAttribute('x',m.x+4); t.setAttribute('y',m.y+1.5); t.setAttribute('fill','#c7e3ff'); t.setAttribute('font-size','4'); t.textContent=m.label;
+      g.append(c,t);
+      g.onclick=()=>{
+        state.answers[q.id]={type:'hotspot',choice:idx,score:m.score,label:m.label};
+        [...svg.querySelectorAll('circle')].forEach((cc,i)=> cc.setAttribute('fill', i===idx? '#22c55e':'#38bdf8'));
+        updateHUD(); autosave();
+      };
+      svg.appendChild(g);
+    });
+    viz.appendChild(svg); box.appendChild(viz);
+  }
+
+  if(q.type==='short' || q.type==='doc'){
+    const ta=document.createElement('textarea'); ta.placeholder='พิมพ์คำตอบสั้น ๆ ที่นี่'; ta.value=state.answers[q.id]?.text||'';
+    ta.oninput=()=>{ state.answers[q.id]={type:q.type,text:ta.value}; updateHUD(); autosave(); };
+    box.appendChild(ta);
+  }
+
+  return box;
+}
+
+function commonPrefixLen(a,b){
+  const A=a.split('|'),B=b.split('|'); let n=0;
+  for(let i=0;i<Math.min(A.length,B.length);i++){ if(A[i]===B[i]) n++; else break; }
+  return n;
+}
+
+/* ========= HUD / Progress ========= */
+function updateHUD(){
+  const autoTypes = new Set(['mcq','hotspot','match','order']);
+  const totalAuto = QUIZ.filter(q=>autoTypes.has(q.type)).length * 5;
+  let got=0, answered=0;
+  for(const q of QUIZ){
+    const ans=state.answers[q.id];
+    if(ans) answered++;
+    if(ans && autoTypes.has(q.type)) got += Number(ans.score||0);
+  }
+  document.getElementById('done').textContent = Object.keys(state.answers).length;
+  document.getElementById('score').textContent = `${got}/${totalAuto}`;
+
+  const pct = Math.min(100, Math.round(100*answered/QUIZ.length));
+  els.bar.style.width = pct + '%';
+  document.getElementById('pill').textContent = answered===0 ? 'พร้อมเริ่ม' : `ตอบแล้ว ${answered}/${QUIZ.length}`;
+}
+
+/* ========= Insight ========= */
+const topicByQ = {
+  1:'สุโขทัย',2:'สุโขทัย',3:'สุโขทัย',4:'สุโขทัย',19:'สุโขทัย',
+  6:'อยุธยา',9:'อยุธยา',10:'อยุธยา',11:'อยุธยา',12:'อยุธยา',13:'อยุธยา',14:'อยุธยา',15:'อยุธยา',16:'อยุธยา',17:'อยุธยา',18:'อยุธยา'
+};
+function makeInsights(){
+  const autoTypes = new Set(['mcq','hotspot','match','order']);
+  const sec = {}; let totalAuto=0, gotAuto=0;
+  for(const q of QUIZ){
+    const ans=state.answers[q.id]; if(!ans) continue;
+    if(autoTypes.has(q.type)){
+      const s = Number(ans.score||0);
+      const t = topicByQ[q.id] || 'ทักษะทั่วไป';
+      sec[t] = sec[t] || {got:0,total:0};
+      sec[t].got += s; sec[t].total += 5;
+      gotAuto += s; totalAuto += 5;
+    }
+  }
+  const pct = totalAuto? Math.round(100*gotAuto/totalAuto):0;
+  const msgs = [];
+  msgs.push(`ภาพรวม: ${gotAuto}/${totalAuto} (${pct}%) — ${gradeWord(pct)}`);
+  for(const [k,v] of Object.entries(sec)){
+    const p = v.total? Math.round(100*v.got/v.total):0;
+    if(p>=80) msgs.push(`เด่น: ส่วน “${k}” ทำได้ดีมาก (${p}%)`);
+    else if(p>=60) msgs.push(`พอใช้: ส่วน “${k}” อยู่ระดับใช้ได้ (${p}%)`);
+    else msgs.push(`ควรทบทวน: ส่วน “${k}” ต่ำกว่าเกณฑ์ (${p}%)`);
+  }
+  if((sec['อยุธยา']?.got||0) < (sec['สุโขทัย']?.got||0)){
+    msgs.push('ข้อแนะนำ: เน้น “การเมืองการปกครองอยุธยา–เหตุการณ์สำคัญ” เพิ่ม (รวมศูนย์อำนาจ, เสียกรุง, การค้า)');
+  }
+  return msgs.join('\n');
+}
+function gradeWord(p){ if(p>=85) return 'ยอดเยี่ยม'; if(p>=70) return 'ดี'; if(p>=60) return 'พอใช้'; return 'ต้องปรับปรุง'; }
+
+/* ========= Summary ========= */
+function showSubmit(){
+  const autoTypes = new Set(['mcq','hotspot','match','order']);
+  let totalAuto=0, gotAuto=0;
+  const list=document.createElement('div');
+
+  QUIZ.forEach(q=>{
+    const ans=state.answers[q.id]; const item=document.createElement('div'); item.className='sum-item';
+    let line=`ข้อ ${q.id} – `;
+    if(autoTypes.has(q.type)){
+      const sc=Number(ans?.score||0); gotAuto+=sc; totalAuto+=5; line+=`ได้ ${sc}/5`;
+    }else{ line+='คำตอบเปิด (ตรวจภายหลัง)'; }
+    item.textContent=line; list.appendChild(item);
+  });
+
+  const insights = makeInsights().replace(/\n/g,'<br>');
+  const wrap=document.createElement('div');
+  wrap.innerHTML=
+    `<h3>สรุปคะแนน (อัตโนมัติ)</h3>
+     <div class="note">MCQ/Hotspot/จับคู่/เรียงลำดับ ตรวจอัตโนมัติสเกล 1–5 • คำตอบเปิดตรวจโดยครู</div>
+     <div style="margin:10px 0;padding:10px;border:1px dashed var(--bd);border-radius:12px;background:#0b162d">
+       <b>insight คะแนน</b><br>${insights}
+     </div>`;
+  wrap.appendChild(list);
+
+  const box=document.getElementById('summaryBox');
+  box.innerHTML='';
+  box.appendChild(wrap);
+}
+
+/* ========= Autosave / Restore ========= */
+function getUserInfo(){
+  return {
+    name: document.getElementById('stuName')?.value?.trim()||'',
+    id: document.getElementById('stuId')?.value?.trim()||'',
+    cls: document.getElementById('stuClass')?.value?.trim()||'',
+    note: document.getElementById('stuNote')?.value?.trim()||''
+  };
+}
+function setUserInfo(u){
+  if(!u) return;
+  document.getElementById('stuName').value = u.name||'';
+  document.getElementById('stuId').value = u.id||'';
+  document.getElementById('stuClass').value = u.cls||'';
+  document.getElementById('stuNote').value = u.note||'';
+}
+function autosave(force=false){
+  clearTimeout(autosave._t);
+  const doSave=()=>{
+    const payload = { ts: Date.now(), version: 1, user: getUserInfo(), i: state.i, answers: state.answers };
+    try{ localStorage.setItem(LS_KEY, JSON.stringify(payload)); }catch(e){ console.warn('LocalStorage error', e); }
+  };
+  if(force){ doSave(); } else { autosave._t = setTimeout(doSave, 250); }
+}
+function restoreFromLocalStorage(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(!raw) return;
+    const data = JSON.parse(raw);
+    if(!data) return;
+    setUserInfo(data.user);
+    state.i = Number.isInteger(data.i)? data.i : 0;
+    state.answers = data.answers || {};
+  }catch(e){ console.warn('Restore failed', e); }
+}
+
+/* ========= Exporters ========= */
+function exportJSON(){
+  const obj = buildExportObject();
+  const blob = new Blob([JSON.stringify(obj,null,2)], {type:'application/json'});
+  downloadBlob(blob, makeFileName('json'));
+}
+function exportCSV(){
+  const obj = buildExportObject();
+  const rows = [];
+  rows.push(['timestamp','name','student_id','class','note','total_auto','max_auto','percent','insight'].map(csvCell).join(','));
+  rows.push([
+    obj.meta.timestamp, obj.meta.name, obj.meta.student_id, obj.meta.class, obj.meta.note,
+    obj.summary.total_auto, obj.summary.max_auto, obj.summary.percent+'%', (obj.summary.insight||'').replace(/\n/g,' | ')
+  ].map(csvCell).join(','));
+  rows.push('qid,type,score,detail'.split(',').map(csvCell).join(','));
+  obj.items.forEach(it=>{
+    rows.push([it.qid, it.type, it.score, it.detail||''].map(csvCell).join(','));
+  });
+  const blob = new Blob([rows.join('\n')], {type:'text/csv;charset=utf-8;'});
+  downloadBlob(blob, makeFileName('csv'));
+}
+function buildExportObject(){
+  const autoTypes = new Set(['mcq','hotspot','match','order']);
+  const items = []; let total=0, max=0;
+  for(const q of QUIZ){
+    const ans = state.answers[q.id]; let score = 0, detail='';
+    if(ans){
+      if(q.type==='mcq'){ score = Number(ans.score||0); detail = ans.choiceText||''; }
+      else if(q.type==='hotspot'){ score = Number(ans.score||0); detail = ans.label? `เลือก ${ans.label}` : ''; }
+      else if(q.type==='match'){ score = Number(ans.score||0); detail = ans.map? JSON.stringify(ans.map):''; }
+      else if(q.type==='order'){ score = Number(ans.score||0); detail = ans.order? ans.order.join(' > '):''; }
+      else if(q.type==='short' || q.type==='doc'){ detail = ans.text||''; }
+    }
+    if(autoTypes.has(q.type)){ total+=score; max+=5; }
+    items.push({qid:q.id, type:q.type, score, detail});
+  }
+  const insight = makeInsights();
+  const u = getUserInfo();
+  return {
+    meta:{ timestamp: new Date().toISOString(), name: u.name, student_id: u.id, class: u.cls, note: u.note },
+    summary:{ total_auto: total, max_auto: max, percent: max? Math.round(100*total/max):0, insight },
+    items
+  };
+}
+function makeFileName(ext){
+  const u = getUserInfo();
+  const safe = (s)=> (s||'').replace(/[^\p{L}\p{N}_\-\.]+/gu,'_').slice(0,40) || 'anon';
+  const t = new Date().toISOString().replace(/[:\.]/g,'-');
+  return `M2History_${safe(u.class)}_${safe(u.name)}_${t}.${ext}`;
+}
+function downloadBlob(blob, filename){
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = filename;
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 0);
+}
+function csvCell(v){ const s = (v==null? '' : String(v)); return `"${s.replace(/"/g,'""')}"`; }
+</script>
+</body>
+</html>
