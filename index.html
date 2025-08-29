@@ -1,106 +1,30 @@
 <!doctype html>
 <html lang="th">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>ประวัติศาสตร์ ม.2 – ชุดที่ 1</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>เมนูข้อสอบ</title>
   <style>
-    body{font:16px/1.6 system-ui,"Noto Sans Thai",sans-serif;margin:20px}
-    label{display:block;margin:10px 0}
-    button{padding:10px 16px;border:0;border-radius:8px;background:#38bdf8}
+    :root{--bg:#0b122a;--card:#152441;--ink:#e6f1ff;--accent:#38bdf8}
+    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,"Noto Sans Thai",sans-serif}
+    .wrap{max-width:720px;margin:48px auto;padding:0 20px}
+    .card{background:var(--card);padding:24px;border-radius:14px}
+    a.btn{display:block;padding:12px 16px;margin:10px 0;border-radius:12px;background:var(--accent);color:#001b2e;text-decoration:none;font-weight:700;text-align:center}
   </style>
 </head>
 <body>
-  <h1>ประวัติศาสตร์ ม.2 – ชุดที่ 1</h1>
-
-  <form id="quizForm">
-    <!-- ฟิลด์บังคับพื้นฐาน -->
-    <input type="hidden" name="sheet" value="HIS_M2_SET1">   <!-- จะให้ลงชีตย่อยชื่อ HIS_M2_SET1 -->
-    <input type="hidden" name="TestId" value="HIS-M2-SET1">
-    <input type="hidden" name="ua" value="">
-
-    <label>รหัสนักเรียน
-      <input name="StudentId" required>
-    </label>
-    <label>ชื่อ-นามสกุล (ถ้าต้องการ)
-      <input name="Name">
-    </label>
-
-    <!-- ตัวอย่างข้อสอบ -->
-    <fieldset>
-      <legend>ข้อ 1: ไทยสถาปนากรุงรัตนโกสินทร์ในปี พ.ศ. ใด</legend>
-      <label><input type="radio" name="q1" value="A" required> 2323</label>
-      <label><input type="radio" name="q1" value="B"> 2325</label>
-      <label><input type="radio" name="q1" value="C"> 2327</label>
-      <label><input type="radio" name="q1" value="D"> 2331</label>
-    </fieldset>
-
-    <fieldset>
-      <legend>ข้อ 2: ...</legend>
-      <input name="q2" placeholder="พิมพ์คำตอบสั้น ๆ">
-    </fieldset>
-
-    <button type="submit">ส่งคำตอบ</button>
-  </form>
-
-  <p id="msg"></p>
-
-  <script>
-  // 1) ตั้งค่า ENDPOINT เป็น URL Web App ของคุณ
-  const ENDPOINT = "https://script.google.com/macros/s/DEPLOYMENT_ID/exec";
-
-  // 2) ใส่ userAgent อัตโนมัติ
-  document.querySelector('input[name="ua"]').value = navigator.userAgent;
-
-  // 3) (ไม่บังคับ) autosave กันเน็ตหลุด
-  const KEY = "autosave-HIS-M2-SET1";
-  const form = document.getElementById('quizForm');
-  const msg = document.getElementById('msg');
-
-  window.addEventListener('DOMContentLoaded', ()=>{
-    const saved = localStorage.getItem(KEY);
-    if(saved){
-      const data = JSON.parse(saved);
-      Object.keys(data).forEach(k=>{
-        const el = form.elements[k];
-        if(!el) return;
-        if (el.type === 'radio') {
-          const radio = form.querySelector(`input[name="${k}"][value="${data[k]}"]`);
-          if (radio) radio.checked = true;
-        } else {
-          el.value = data[k];
-        }
-      });
-    }
-  });
-
-  form.addEventListener('input', ()=>{
-    const fd = new FormData(form);
-    const obj = Object.fromEntries(fd.entries());
-    localStorage.setItem(KEY, JSON.stringify(obj));
-  });
-
-  // 4) ส่งคำตอบด้วย FormData (เลี่ยง preflight)
-  form.addEventListener('submit', async (e)=>{
-    e.preventDefault();
-    msg.textContent = "กำลังส่ง...";
-    const fd = new FormData(form);
-    try{
-      const res = await fetch(ENDPOINT, { method: "POST", body: fd });
-      const text = await res.text();            // handle บางครั้ง Proxy/รูปแบบตอบกลับ
-      let out = {};
-      try { out = JSON.parse(text); } catch(_) {}
-      if (res.ok && out.ok !== false) {
-        msg.textContent = "บันทึกสำเร็จ ✅";
-        // (ไม่บังคับ) ล้าง autosave หลังส่งสำเร็จ
-        localStorage.removeItem(KEY);
-      } else {
-        msg.textContent = "บันทึกล้มเหลว ❌ " + (out.error || res.status);
-      }
-    } catch (err) {
-      msg.textContent = "เครือข่ายมีปัญหา ลองใหม่ ❌";
-    }
-  });
-  </script>
+  <main class="wrap">
+    <h1>เมนูข้อสอบ</h1>
+    <div class="card">
+      <a class="btn" href="./History%20M1.html">1) ประวัติศาสตร์ ม.1</a>
+      <a class="btn" href="./History%20M2-1.html">2.1) ประวัติศาสตร์ ม.2 (ชุดที่ 1)</a>
+      <a class="btn" href="./History%20M2.html">2.2) ประวัติศาสตร์ ม.2 (ชุดที่ 2)</a>
+      <a class="btn" href="./History%20M3.html">3) ประวัติศาสตร์ ม.3</a>
+      <a class="btn" href="./Science%20M1.html">4) วิทยาศาสตร์ ม.1</a>
+      <a class="btn" href="./Science%20M2.html">5) วิทยาศาสตร์ ม.2</a>
+      <a class="btn" href="./Science%20M3.html">6) วิทยาศาสตร์ ม.3</a>
+    </div>
+  </main>
 </body>
 </html>
+
